@@ -209,6 +209,20 @@ Defining sensible org-mode defaults
   (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+end_src
 
+** Always kill current buffer
+#+begin_src emacs-lisp
+  (defun kill-curr-buffer ()
+    (interactive)
+    (kill-buffer (current-buffer)))
+  (global-set-key (kbd "C-x k") 'kill-curr-buffer)
+#+end_src
+** Kill all buffers
+#+begin_src emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
+#+end_src
 * Use-Package section
 
 ** Initialize =auto-package-update=
