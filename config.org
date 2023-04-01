@@ -285,3 +285,23 @@ Displays colour of a hex-code as background-colour behind said hex-code
     :init
     (add-hook 'css-mode-hook #'rainbow-mode 1))
 #+end_src
+
+** Initialize =switch-window=
+
+*** Description
+Better way to switch windows
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package switch-window
+    :ensure t
+    :config
+    (setq switch-window-input-style 'minibuffer)
+    (setq switch-window-increase 4)
+    (setq switch-window-threshold 2)
+    (setq switch-window-shortcut-style 'qwerty)
+    (setq switch-window-qwerty-shortcuts
+          '("a" "s" "d" "f" "h" "j" "k" "l"))
+    :bind
+    ([remap other-window] . switch-window))
+#+end_src
