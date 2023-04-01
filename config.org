@@ -324,3 +324,12 @@ Evil extension for org-mode
     :init
     (add-hook 'org-mode-hook #'evil-org-mode))
 #+end_src
+
+** Initialize =sudo-edit=
+Allow for editing files as sudo
+#+begin_src emacs-lisp
+  (use-package sudo-edit
+    :ensure t
+    :bind
+    ("s-C-e" . sudo-edit))
+#+end_src
