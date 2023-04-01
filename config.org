@@ -85,7 +85,7 @@ on some major modes rather than globally
 
 *** Enable subword-mode
 #+begin_src emacs-lisp
-  
+  (global-subword-mode 1)
 #+end_src
 *** Indentation
 #+begin_src emacs-lisp
