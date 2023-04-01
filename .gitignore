@@ -1,5 +1,6 @@
 config.el
 custom-vars.el
+recentf
 history
 ido.last
 smex-items

@@ -12,7 +12,34 @@
 * QoL section
 Some quality-of-life improvements
 
-** Enable line number
+** Disable annoyances
+
+*** Disable default startup screen
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t)
+#+end_src
+
+*** Disable most GUI elements
+#+begin_src emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)  
+#+end_src
+
+*** Disable automatic creation of backup files
+#+begin_src emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)  
+#+end_src
+
+*** Disable ring-bell
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)  
+#+end_src
+
+** Visual improvements
+
+*** Enable line number
 Certain modes will break with line-numbers-mode (e.g. ansi-term) so I'm only enabling it
 on some major modes rather than globally
 #+begin_src emacs-lisp
@@ -20,50 +47,47 @@ on some major modes rather than globally
   (add-hook 'text-mode-hook 'display-line-numbers-mode)
 #+end_src
 
-** Show parent parentheses
+*** Enable prettify symbols
 #+begin_src emacs-lisp
-  (show-paren-mode 1)
+  (global-prettify-symbols-mode t)  
 #+end_src
-
-** Enable rainbow-delimiters in all programming modes
+*** Enable rainbow-delimiters in all programming modes
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
 
-** Disable default startup screen
+*** Show parent parentheses
 #+begin_src emacs-lisp
-  (setq inhibit-startup-message t)
+  (show-paren-mode 1)
 #+end_src
 
-** Disable most GUI elements
+*** Highlight current line
 #+begin_src emacs-lisp
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)  
+  (global-hl-line-mode t)  
 #+end_src
 
-** Enable copy-pasting outside of emacs
-#+begin_src emacs-lisp
-  (setq x-select-enable-clipboard t)
-#+end_src
-
-** Disable automatic creation of backup files
-#+begin_src emacs-lisp
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)  
-#+end_src
-
-** Enable conservative scrolling
+*** Enable conservative scrolling
 #+begin_src emacs-lisp
   (setq scroll-conservatively 100)  
 #+end_src
 
-** Disable ring-bell
+** Ease of use
+
+*** Enable copy-pasting outside of emacs
 #+begin_src emacs-lisp
-  (setq ring-bell-function 'ignore)  
+  (setq x-select-enable-clipboard t)
 #+end_src
 
-** Indentation
+*** Enable pair-matching
+#+begin_src emacs-lisp
+  (electric-pair-mode t)  
+#+end_src
+
+*** Enable subword-mode
+#+begin_src emacs-lisp
+  
+#+end_src
+*** Indentation
 #+begin_src emacs-lisp
   (setq-default tab-width 4)
   (setq-default standard-indent 4)
@@ -73,39 +97,12 @@ on some major modes rather than globally
   (setq backward-delete-char-untabify-method 'nil)
 #+end_src
 
-** Enable prettify symbols
-#+begin_src emacs-lisp
-  (global-prettify-symbols-mode t)  
-#+end_src
-
-** Enable pair-matching
-#+begin_src emacs-lisp
-  (electric-pair-mode t)  
-#+end_src
-
-** Creating new window automatically focuses it
-#+begin_src emacs-lisp
-  (defun split-and-follow-horizontally ()
-    (interactive)
-    (split-window-below)
-    (balance-windows)
-    (other-window 1))
-  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-
-  (defun split-and-follow-vertically ()
-    (interactive)
-    (split-window-right)
-    (balance-windows)
-    (other-window 1))
-  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
-#+end_src
-
-** Change yes/no prompt to just y/n
+*** Change yes/no prompt to just y/n
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)  
 #+end_src
 
-** More comfortable resize bindings
+*** More comfortable resize bindings
 #+begin_src emacs-lisp
   (global-set-key (kbd "s-C-<left>") 'shrink-window-horizontally)
   (global-set-key (kbd "s-C-<right>") 'enlarge-window-horizontally)
@@ -113,12 +110,7 @@ on some major modes rather than globally
   (global-set-key (kbd "s-C-<up>") 'enlarge-window)
 #+end_src
 
-** Highlight current line
-#+begin_src emacs-lisp
-  (global-hl-line-mode t)  
-#+end_src
-
-** Enable ido mode
+*** Enable ido mode
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching nil)
   (setq ido-create-new-buffer 'always)
@@ -127,7 +119,8 @@ on some major modes rather than globally
   (ido-mode 1)
 #+end_src
 
-** Change default buffer-list
+*** Change default buffer-list
+
 I hate the default buffer list. I'm using ido-switch-buffer on "C-x C-b" and
 ibuffer on "C-x b"
 
@@ -188,6 +181,28 @@ Defining sensible org-mode defaults
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+
+** Creating new window automatically focuses it
+
+*** horizontal
+#+begin_src emacs-lisp
+  (defun split-and-follow-horizontally ()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+#+end_src
+
+*** vertical
+#+begin_src emacs-lisp
+  (defun split-and-follow-vertically ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+end_src
 
 * Use-Package section
@@ -304,4 +319,38 @@ Better way to switch windows
           '("a" "s" "d" "f" "h" "j" "k" "l"))
     :bind
     ([remap other-window] . switch-window))
+#+end_src
+
+** Initialize =evil=
+
+*** Description
+Vim keybindings in emacs. I don't like the emacs text editing keybindings
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :defer nil
+    :init
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    :config
+    (evil-mode 1))
+#+end_src
+
+** Initialize =evil-org-mode=
+
+*** Description
+Evil extension for org-mode
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package evil-org
+    :ensure t
+    :after org
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys)
+    :init
+    (add-hook 'org-mode-hook #'evil-org-mode 1))
 #+end_src
