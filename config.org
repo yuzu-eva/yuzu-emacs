@@ -1,0 +1,287 @@
+* Terminal
+
+** Setting default shell to zsh
+#+begin_src emacs-lisp
+  (defvar my-term-shell "/usr/bin/zsh")
+  (defadvice ansi-term (before force-bash)
+    (interactive (list my-term-shell)))
+  (ad-activate 'ansi-term)
+  (global-set-key (kbd "<s-C-return>") 'ansi-term)
+#+end_src
+
+* QoL section
+Some quality-of-life improvements
+
+** Enable line number
+Certain modes will break with line-numbers-mode (e.g. ansi-term) so I'm only enabling it
+on some major modes rather than globally
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (add-hook 'text-mode-hook 'display-line-numbers-mode)
+#+end_src
+
+** Show parent parentheses
+#+begin_src emacs-lisp
+  (show-paren-mode 1)
+#+end_src
+
+** Enable rainbow-delimiters in all programming modes
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+end_src
+
+** Disable default startup screen
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t)
+#+end_src
+
+** Disable most GUI elements
+#+begin_src emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)  
+#+end_src
+
+** Enable copy-pasting outside of emacs
+#+begin_src emacs-lisp
+  (setq x-select-enable-clipboard t)
+#+end_src
+
+** Disable automatic creation of backup files
+#+begin_src emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)  
+#+end_src
+
+** Enable conservative scrolling
+#+begin_src emacs-lisp
+  (setq scroll-conservatively 100)  
+#+end_src
+
+** Disable ring-bell
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)  
+#+end_src
+
+** Indentation
+#+begin_src emacs-lisp
+  (setq-default tab-width 4)
+  (setq-default standard-indent 4)
+  (setq c-basic-offset tab-width)
+  (setq-default electric-indent-inhibit t)
+  (setq-default indent-tabs-mode t)
+  (setq backward-delete-char-untabify-method 'nil)
+#+end_src
+
+** Enable prettify symbols
+#+begin_src emacs-lisp
+  (global-prettify-symbols-mode t)  
+#+end_src
+
+** Enable pair-matching
+#+begin_src emacs-lisp
+  (electric-pair-mode t)  
+#+end_src
+
+** Creating new window automatically focuses it
+#+begin_src emacs-lisp
+  (defun split-and-follow-horizontally ()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+  (defun split-and-follow-vertically ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+#+end_src
+
+** Change yes/no prompt to just y/n
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)  
+#+end_src
+
+** More comfortable resize bindings
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-C-<left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "s-C-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "s-C-<down>") 'shrink-window)
+  (global-set-key (kbd "s-C-<up>") 'enlarge-window)
+#+end_src
+
+** Highlight current line
+#+begin_src emacs-lisp
+  (global-hl-line-mode t)  
+#+end_src
+
+** Enable ido mode
+#+begin_src emacs-lisp
+  (setq ido-enable-flex-matching nil)
+  (setq ido-create-new-buffer 'always)
+  (setq ido-everywhere t)
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+  (ido-mode 1)
+#+end_src
+
+** Change default buffer-list
+I hate the default buffer list. I'm using ido-switch-buffer on "C-x C-b" and
+ibuffer on "C-x b"
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+  (global-set-key (kbd "C-x b") 'ibuffer)
+#+end_src
+
+* Org mode
+Defining sensible org-mode defaults
+
+#+begin_src emacs-lisp
+  (use-package org
+    :config
+    (add-hook 'org-mode-hook 'org-indent-mode)
+    (add-hook 'org-mode-hook
+	      #'(lambda ()
+		 (visual-line-mode 1))))
+
+  (use-package org-indent
+    :diminish org-indent-mode)
+
+  (use-package htmlize
+    :ensure t)
+#+end_src
+
+* Custom functions
+
+** Toggle transparency
+#+begin_src emacs-lisp
+  (defun toggle-transparency()
+    (interactive)
+    (let ((alpha (frame-parameter nil 'alpha)))
+      (set-frame-parameter
+       nil 'alpha
+       (if (eql (cond ((numberp alpha) alpha)
+                      ((numberp (cdr alpha)) (cdr alpha))
+                      ;; Also handle undocumented (<active> <inactive>) form.
+                      ((numberp (cadr alpha)) (cadr alpha)))
+                100)
+           '(80 . 80) '(100 . 100)))))
+  (global-set-key (kbd "C-c t") 'toggle-transparency)
+#+end_src
+
+** Config edit/reload
+
+*** edit
+#+begin_src emacs-lisp
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+end_src
+
+*** reload
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+
+* Use-Package section
+
+** Initialize =auto-package-update=
+
+*** Description
+Auto-package-update automatically updates and removes old packages
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package auto-package-update
+    :defer nil
+    :ensure t
+    :config
+    (setq auto-package-update-delete-old-versions t)
+    (setq auto-package-update-hide-results t)
+    (auto-package-update-maybe))
+#+end_src
+
+** Initialize =diminish=
+
+*** Description
+Hides minor modes to prevent cluttering mode line
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package diminish
+    :ensure t)
+#+end_src
+
+** Initialize =which-key=
+
+*** Description
+Completion menu for keybinds
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :diminish which-key-mode
+    :init
+    (which-key-mode))
+#+end_src
+
+** Initialize =ido-vertical-mode=
+
+*** Description
+Uses a vertical mini-buffer for ido, instead of a horizontal one
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package ido-vertical-mode
+    :ensure t
+    :init
+    (ido-vertical-mode 1))
+#+end_src
+
+** Initialize =smex=
+
+*** Description
+Vertical buffer for interactive commands, similar to ido-vertical
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind
+    ("M-x" . smex))
+#+end_src
+
+** Initialize =avy=
+
+*** Description
+Go to char
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind
+    ("M-s" . avy-goto-char))
+#+end_src
+
+** Initialize =rainbow-mode=
+
+*** Description
+Displays colour of a hex-code as background-colour behind said hex-code
+
+*** Code
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (add-hook 'css-mode-hook #'rainbow-mode 1))
+#+end_src

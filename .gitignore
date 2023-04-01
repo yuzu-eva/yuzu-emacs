@@ -1,0 +1,12 @@
+config.el
+custom-vars.el
+ido.last
+smex-items
+.last-package-update-day
+
+auto-save-list
+elpa
+transient
+lisp/**
+
+!lisp/rainbow-delimiters.el
