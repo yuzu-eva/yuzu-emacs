@@ -472,6 +472,7 @@ Replaces the default "M-y" kill ring with a popup menu for easy selection
     ("M-y" . popup-kill-ring))
 #+end_src
 * Programming section
+
 ** Initialize =company=
 
 Company is an autocompletion frontend
@@ -481,4 +482,18 @@ Company is an autocompletion frontend
     :ensure t
     :init
     (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
+* Custom keybinds
+
+Some custom keybinds to make life easier
+
+** Evil keybinds
+
+Keybinds for evil-mode
+
+*** Comment or uncomment selected region
+
+#+begin_src emacs-lisp
+  (evil-define-key 'visual 'global "gc" 'comment-or-uncomment-region)
 #+end_src
