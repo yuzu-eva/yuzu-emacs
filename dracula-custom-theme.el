@@ -33,7 +33,7 @@
  '(button ((t (:inherit (link)))))
  '(link ((t (:underline (:color foreground-color :style line) :foreground "#8be9fd"))))
  '(link-visited ((default (:inherit (link))) (((class color) (background light)) (:foreground "magenta4")) (((class color) (background dark)) (:foreground "violet"))))
- '(fringe ((t (:foreground "#b6b6b2" :background "#282a36"))))
+ '(fringe ((t (:foreground "#b6b6b2" :background "#000000"))))
  '(header-line ((t (:inherit 'mode-line))))
  '(tooltip ((t (:foreground "#f8f8f2" :background "#44475a"))))
  '(mode-line ((t (:box (:line-width (1 . 1) :color "#44475a" :style nil) :inverse-video nil :foreground "#f8f8f2" :background "#44475a"))))
@@ -47,7 +47,7 @@
  '(match ((t (:foreground "#282a36" :background "#f1fa8c"))))
  '(next-error ((t (:inherit (region)))))
  '(query-replace ((t (:inherit (isearch)))))
- '(default ((t (:family "Hack Nerd Font" :foundry "SRC" :width normal :height 113 :weight normal :slant normal :underline nil :overline nil :extend nil :strike-through nil :box nil :inverse-video nil :foreground "#F8F8F2" :background "#262626" :stipple nil :inherit nil)))))
+ '(default ((t (:family "Hack Nerd Font" :foundry "SRC" :width normal :height 113 :weight normal :slant normal :underline nil :overline nil :extend nil :strike-through nil :box nil :inverse-video nil :foreground "#F8F8F2" :background "#000000" :stipple nil :inherit nil)))))
 
 (provide-theme 'dracula-custom)
 
