@@ -10,6 +10,7 @@
 #+end_src
 
 * QoL section
+
 Some quality-of-life improvements
 
 ** Disable annoyances
@@ -40,8 +41,10 @@ Some quality-of-life improvements
 ** Visual improvements
 
 *** Enable line number
+
 Certain modes will break with line-numbers-mode (e.g. ansi-term) so I'm only enabling it
 on some major modes rather than globally
+
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'text-mode-hook 'display-line-numbers-mode)
@@ -79,6 +82,7 @@ on some major modes rather than globally
 #+begin_src emacs-lisp
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
+
 ** Ease of use
 
 *** Enable copy-pasting outside of emacs
@@ -138,7 +142,8 @@ ibuffer on "C-x b"
 #+end_src
 
 * Org mode
-Defining sensible org-mode defaults
+
+My preferred org-mode defaults
 
 #+begin_src emacs-lisp
   (use-package org
@@ -214,23 +219,29 @@ Defining sensible org-mode defaults
 #+end_src
 
 ** Always kill current buffer
+
 #+begin_src emacs-lisp
   (defun kill-curr-buffer ()
     (interactive)
     (kill-buffer (current-buffer)))
   (global-set-key (kbd "C-x k") 'kill-curr-buffer)
 #+end_src
+
 ** Kill all buffers
+
 #+begin_src emacs-lisp
   (defun kill-all-buffers ()
     (interactive)
     (mapc 'kill-buffer (buffer-list)))
   (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
 #+end_src
+
 * Use-Package section
 
 ** Initialize =dashboard=
+
 Configure a custom starting buffer
+
 #+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
@@ -290,6 +301,7 @@ Configure a custom starting buffer
 ** Initialize =auto-package-update=
 
 Auto-package-update automatically updates and removes old packages
+
 #+begin_src emacs-lisp
   (use-package auto-package-update
     :defer nil
@@ -302,15 +314,20 @@ Auto-package-update automatically updates and removes old packages
 
 ** Initialize =diminish=
 
-Hides minor modes to prevent cluttering mode line
+Hides minor modes to prevent cluttering modeline
+
 #+begin_src emacs-lisp
   (use-package diminish
-    :ensure t)
+    :ensure t
+    :init
+    (diminish 'subword-mode)
+    (diminish 'visual-line-mode))
 #+end_src
 
 ** Initialize =which-key=
 
 Completion menu for keybinds
+
 #+begin_src emacs-lisp
   (use-package which-key
     :ensure t
@@ -322,6 +339,7 @@ Completion menu for keybinds
 ** Initialize =ido-vertical-mode=
 
 Uses a vertical mini-buffer for ido, instead of a horizontal one
+
 #+begin_src emacs-lisp
   (use-package ido-vertical-mode
     :ensure t
@@ -331,7 +349,8 @@ Uses a vertical mini-buffer for ido, instead of a horizontal one
 
 ** Initialize =smex=
 
-Vertical buffer for interactive commands, similar to ido-vertical
+Vertical mini-buffer for interactive commands, similar to ido-vertical
+
 #+begin_src emacs-lisp
   (use-package smex
     :ensure t
@@ -342,7 +361,10 @@ Vertical buffer for interactive commands, similar to ido-vertical
 
 ** Initialize =avy=
 
-Go to char
+Pressing "M-s" prompts for a character. Entering a character will highlight all
+of them in the current visible buffer with another letter overlayed. Pressing
+that letter will move the cursor to the highlighted character
+
 #+begin_src emacs-lisp
   (use-package avy
     :ensure t
@@ -352,17 +374,19 @@ Go to char
 
 ** Initialize =rainbow-mode=
 
-Displays colour of a hex-code as background-colour behind said hex-code
+Displays colour of a hex code as background colour behind said hex code
+
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
     :init
-    (add-hook 'css-mode-hook #'rainbow-mode))
+    (add-hook 'css-mode-hook 'rainbow-mode))
 #+end_src
 
 ** Initialize =switch-window=
 
 Better way to switch windows
+
 #+begin_src emacs-lisp
   (use-package switch-window
     :ensure t
@@ -379,7 +403,10 @@ Better way to switch windows
 
 ** Initialize =evil=
 
-Vim keybindings in emacs. I don't like the emacs text editing keybindings
+VIM keybindings in emacs text editing. I don't like emacs' default editor
+keybinds. This emacs config uses VIM keybinds only for text editing. Everthing
+else still uses emacs bindings
+
 #+begin_src emacs-lisp
   (use-package evil
     :ensure t
@@ -394,6 +421,7 @@ Vim keybindings in emacs. I don't like the emacs text editing keybindings
 ** Initialize =evil-org-mode=
 
 Evil extension for org-mode
+
 #+begin_src emacs-lisp
   (use-package evil-org
     :ensure t
@@ -402,11 +430,13 @@ Evil extension for org-mode
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys)
     :init
-    (add-hook 'org-mode-hook #'evil-org-mode))
+    (add-hook 'org-mode-hook 'evil-org-mode))
 #+end_src
 
 ** Initialize =sudo-edit=
+
 Allow for editing files as sudo
+
 #+begin_src emacs-lisp
   (use-package sudo-edit
     :ensure t
@@ -414,9 +444,28 @@ Allow for editing files as sudo
     ("s-C-e" . sudo-edit))
 #+end_src
 
+** Initialize =powerline=
+
+Better looking modeline. Using powerline with the spaceline theme
+
+#+begin_src emacs-lisp
+  (use-package spaceline
+    :ensure t)
+
+  (use-package powerline
+    :ensure t
+    :config
+    (setq powerline-default-separator 'arrow)
+    :init
+    (spaceline-spacemacs-theme)
+    :hook
+    ('after-init-hook) . 'powerline-reset)
+#+end_src
 * Programming section
 ** Initialize =company=
-Company is an autocompletion frontend.
+
+Company is an autocompletion frontend
+
 #+begin_src emacs-lisp
   (use-package company
     :ensure t
