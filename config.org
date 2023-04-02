@@ -104,6 +104,12 @@ on some major modes rather than globally
 
 ** Ease of use
 
+*** Set default directory
+
+#+begin_src emacs-lisp
+  (setq default-directory "~/")
+#+end_src
+
 *** Enable copy-pasting outside of emacs
 #+begin_src emacs-lisp
   (setq x-select-enable-clipboard t)
