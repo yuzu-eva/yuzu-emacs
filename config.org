@@ -416,6 +416,7 @@ else still uses emacs bindings
     (setq evil-want-C-u-scroll t)
     :config
     (evil-mode 1))
+    (evil-set-undo-system 'undo-redo)
 #+end_src
 
 ** Initialize =evil-org-mode=
@@ -471,6 +472,12 @@ Replaces the default "M-y" kill ring with a popup menu for easy selection
     :bind
     ("M-y" . popup-kill-ring))
 #+end_src
+** Initialize =page-break-lines=
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :ensure t
+    :diminish page-break-lines-mode)
+#+end_src
 * Programming section
 
 ** Initialize =company=
@@ -488,12 +495,8 @@ Company is an autocompletion frontend
 
 Some custom keybinds to make life easier
 
-** Evil keybinds
-
-Keybinds for evil-mode
-
-*** Comment or uncomment selected region
+** Comment or uncomment selected region
 
 #+begin_src emacs-lisp
-  (evil-define-key 'visual 'global "gc" 'comment-or-uncomment-region)
+  (global-set-key (kbd "C-c C-c") 'comment-line)
 #+end_src

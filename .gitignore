@@ -7,9 +7,10 @@ smex-items
 tramp
 .last-package-update-day
 
-auto-save-list
-elpa
-transient
+auto-save-list/
+elpa/
+transient/
 lisp/**
+games/
 
 !lisp/rainbow-delimiters.el
