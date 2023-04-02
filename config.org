@@ -1,3 +1,18 @@
+#+STARTUP: overview
+#+TITLE: yuzu-emacs
+#+LANGUAGE: en
+#+OPTIONS: num:nil
+
+[[./yuzu-emacs.png]]
+
+* Introduction
+
+yuzu-emacs is my personal configuration for emacs.
+It is a (currently) very basic configuration, which is heavily inspired by
+Witchmacs, the main difference is that this configuration is leaning a bit more
+towards vim-keybindings.
+My goal is to make this into a fully functional IDE for RoR, Python and C.
+
 * Terminal
 
 ** Setting default shell to zsh
@@ -407,8 +422,8 @@ Better way to switch windows
 
 ** Initialize =evil=
 
-VIM keybindings in emacs text editing. I don't like emacs' default editor
-keybinds. This emacs config uses VIM keybinds only for text editing. Everthing
+vim keybindings in emacs text editing. I don't like emacs' default editor
+keybinds. This emacs config uses vim keybinds only for text editing. Everthing
 else still uses emacs bindings
 
 #+begin_src emacs-lisp
@@ -440,13 +455,25 @@ Evil extension for org-mode
 
 ** Initialize =evil-surround=
 
-evil-surround is a minor mode that emulates vim-surround by Tim Pope.
+Minor mode that emulates vim-surround by Tim Pope
 
 #+begin_src emacs-lisp
   (use-package evil-surround
     :ensure t
     :config
     (global-evil-surround-mode 1))
+#+end_src
+
+** Initialize =evil-commentary=
+
+Minor mode that emulates vim-commentary by Tim Pope
+
+#+begin_src emacs-lisp
+  (use-package evil-commentary
+    :ensure t
+    :diminish evil-commentary-mode
+    :init
+    (evil-commentary-mode))
 #+end_src
 
 ** Initialize =sudo-edit=
@@ -507,14 +534,4 @@ Company is an autocompletion frontend
     :ensure t
     :init
     (add-hook 'after-init-hook 'global-company-mode))
-#+end_src
-
-* Custom keybinds
-
-Some custom keybinds to make life easier
-
-** Comment or uncomment selected region
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-c C-c") 'comment-line)
 #+end_src
