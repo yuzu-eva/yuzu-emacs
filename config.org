@@ -413,3 +413,13 @@ Allow for editing files as sudo
     :bind
     ("s-C-e" . sudo-edit))
 #+end_src
+
+* Programming section
+** Initialize =company=
+Company is an autocompletion frontend.
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :init
+    (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
