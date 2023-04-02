@@ -75,6 +75,10 @@ on some major modes rather than globally
   (setq scroll-conservatively 100)  
 #+end_src
 
+*** Set initial buffer to dashboard
+#+begin_src emacs-lisp
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+end_src
 ** Ease of use
 
 *** Enable copy-pasting outside of emacs
@@ -225,6 +229,64 @@ Defining sensible org-mode defaults
 #+end_src
 * Use-Package section
 
+** Initialize =dashboard=
+Configure a custom starting buffer
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :defer nil
+    :preface
+    (defun update-config ()
+      (interactive)
+      (let ((dir (expand-file-name user-emacs-directory)))
+        (if (file-exists-p dir)
+            (progn
+              (message "yuzu-emacs is updating!")
+              (cd dir)
+              (shell-command "git pull")
+              (message "Update finished. See changes in *Message* buffer and then restart."))
+          (message "\"%s\" doesn't exist"))))
+
+    (defun create-scratch-buffer ()
+      (interactive)
+      (switch-to-buffer (get-buffer-create "*scratch*"))
+      (lisp-interaction-mode))
+    :config
+    (dashboard-setup-startup-hook)
+    (setq dashboard-items '((recents . 5)))
+    (setq dashboard-banner-logo-title "haaaiiii :3")
+    (setq dashboard-startup-banner "~/.emacs.d/cirno.png")
+    (setq dashboard-center-content t)
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-set-init-info t)
+    (setq dashboard-init-info (format "%d packages loaded in %s"
+                                      (length package-activated-list) (emacs-init-time)))
+    (setq dashboard-set-footer nil)
+    (setq dashboard-set-navigator t)
+    (setq dashboard-navigator-buttons
+          `(;; line1
+           ((,nil
+             "yuzu-emacs on github"
+             "Open yuzu-emacs' github page on your browser"
+             (lambda (&rest _) (browse-url "https://github.com/yuzu-eva/yuzu-emacs")))
+            (nil
+             "Update yuzu-emacs"
+             "Get the latest yuzu-emacs update. See github commits for changes"
+             (lambda (&rest _) (update-config)))
+            (nil
+             "Open scratch buffer"
+             "Switch to the scratch buffer"
+             (lambda (&rest _) (create-scratch-buffer)))
+            ) ;;line 2
+           ((,nil
+             "Open config.org"
+             "Open configuration file"
+             (lambda (&rest _) (find-file "~/.emacs.d/config.org")))
+            (nil
+             "Open init.el"
+             "Open the init file"
+             (lambda (&rest _) (find-file "~/.emacs.d/init.el")))))))
+#+End_src
 ** Initialize =auto-package-update=
 
 Auto-package-update automatically updates and removes old packages
