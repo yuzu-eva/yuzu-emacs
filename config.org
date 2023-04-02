@@ -434,6 +434,17 @@ Evil extension for org-mode
     (add-hook 'org-mode-hook 'evil-org-mode))
 #+end_src
 
+** Initialize =evil-surround=
+
+evil-surround is a minor mode that emulates vim-surround by Tim Pope.
+
+#+begin_src emacs-lisp
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
+#+end_src
+
 ** Initialize =sudo-edit=
 
 Allow for editing files as sudo
@@ -462,6 +473,7 @@ Better looking modeline. Using powerline with the spaceline theme
     :hook
     ('after-init-hook) . 'powerline-reset)
 #+end_src
+
 ** Initialize =popup-kill-ring=
 
 Replaces the default "M-y" kill ring with a popup menu for easy selection
@@ -472,12 +484,14 @@ Replaces the default "M-y" kill ring with a popup menu for easy selection
     :bind
     ("M-y" . popup-kill-ring))
 #+end_src
+
 ** Initialize =page-break-lines=
 #+begin_src emacs-lisp
   (use-package page-break-lines
     :ensure t
     :diminish page-break-lines-mode)
 #+end_src
+
 * Programming section
 
 ** Initialize =company=
