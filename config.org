@@ -461,6 +461,16 @@ Better looking modeline. Using powerline with the spaceline theme
     :hook
     ('after-init-hook) . 'powerline-reset)
 #+end_src
+** Initialize =popup-kill-ring=
+
+Replaces the default "M-y" kill ring with a popup menu for easy selection
+
+#+begin_src emacs-lisp
+  (use-package popup-kill-ring
+    :ensure t
+    :bind
+    ("M-y" . popup-kill-ring))
+#+end_src
 * Programming section
 ** Initialize =company=
 
