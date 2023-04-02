@@ -535,3 +535,12 @@ Company is an autocompletion frontend
     :init
     (add-hook 'after-init-hook 'global-company-mode))
 #+end_src
+
+* Custom keybinds
+
+Some keybinds to make life easier
+
+** Open URL in browser
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c o") 'browse-url-at-point)
+#+end_src
