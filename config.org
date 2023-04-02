@@ -550,3 +550,9 @@ Some keybinds to make life easier
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c o") 'browse-url-at-point)
 #+end_src
+
+** Open recent files menu
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c f") 'recentf-open-files)
+#+end_src
