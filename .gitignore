@@ -9,8 +9,9 @@ tramp
 
 auto-save-list/
 elpa/
-transient/
-lisp/**
 games/
+irony/
+lisp/
+transient/
 
 !lisp/rainbow-delimiters.el
