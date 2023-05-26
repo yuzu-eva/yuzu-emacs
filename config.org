@@ -17,7 +17,7 @@ My goal is to make this into a fully functional IDE for RoR, Python and C.
 
 ** Setting default shell to zsh
 #+begin_src emacs-lisp
-  (defvar my-term-shell "/usr/bin/zsh")
+  (defvar my-term-shell "/bin/zsh")
   (defadvice ansi-term (before force-bash)
     (interactive (list my-term-shell)))
   (ad-activate 'ansi-term)
@@ -56,6 +56,10 @@ Some quality-of-life improvements
 *** Disable fringes
 #+begin_src emacs-lisp
   (set-fringe-mode 0)
+#+end_src
+*** Use bash for TRAMP
+#+begin_src emacs-lisp
+  (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+end_src
 ** Visual improvements
 
@@ -166,6 +170,20 @@ ibuffer on "C-x b"
   (global-set-key (kbd "C-x b") 'ibuffer)
 #+end_src
 
+*** Display PDFs to the right instead of below current window
+
+#+begin_src emacs-lisp
+  (add-to-list 'display-buffer-alist '("\\.pdf$" . 
+  (display-buffer-pop-up-window-split-horizontally)))
+  (defun display-buffer-pop-up-window-split-horizontally (buffer alist)
+    "Call `display-buffer-pop-up-window', setting
+  `split-height-threshold' and `split-width-threshold' so that
+  the split is always horizontal."
+    (let ((split-height-threshold nil)
+          (split-width-threshold 0))
+      (display-buffer-pop-up-window buffer alist)))
+#+end_src
+
 * Org mode
 
 My preferred org-mode defaults
@@ -183,6 +201,101 @@ My preferred org-mode defaults
 
   (use-package htmlize
     :ensure t)
+#+end_src
+
+#+begin_src emacs-lisp
+  (setq org-latex-pdf-process
+      '("latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex -f %f"))
+
+  (setq org-latex-toc-command "\\tableofcontents \\clearpage")
+
+  (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
+
+  (unless (boundp 'org-latex-classes)
+  (setq org-latex-classes nil))
+
+  (add-to-list 'org-latex-classes
+              '("ethz"
+                  "\\documentclass[a4paper,11pt,titlepage]{memoir}
+  \\usepackage[utf8]{inputenc}
+  \\usepackage[T1]{fontenc}
+  \\usepackage{fixltx2e}
+  \\usepackage{graphicx}
+  \\usepackage{longtable}
+  \\usepackage{float}
+  \\usepackage{wrapfig}
+  \\usepackage{rotating}
+  \\usepackage[normalem]{ulem}
+  \\usepackage{amsmath}
+  \\usepackage{textcomp}
+  \\usepackage{marvosym}
+  \\usepackage{wasysym}
+  \\usepackage{amssymb}
+  \\usepackage{hyperref}
+  \\usepackage{mathpazo}
+  \\usepackage{color}
+  \\usepackage{enumerate}
+  \\definecolor{bg}{rgb}{0.95,0.95,0.95}
+  \\tolerance=1000
+      [NO-DEFAULT-PACKAGES]
+      [PACKAGES]
+      [EXTRA]
+  \\linespread{1.1}
+  \\hypersetup{pdfborder=0 0 0}"
+                  ("\\chapter{%s}" . "\\chapter*{%s}")
+                  ("\\section{%s}" . "\\section*{%s}")
+                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+
+  (add-to-list 'org-latex-classes
+              '("article"
+                  "\\documentclass[11pt,a4paper]{article}
+  \\usepackage[utf8]{inputenc}
+  \\usepackage[T1]{fontenc}
+  \\usepackage{fixltx2e}
+  \\usepackage{graphicx}
+  \\usepackage{longtable}
+  \\usepackage{float}
+  \\usepackage{wrapfig}
+  \\usepackage{rotating}
+  \\usepackage[normalem]{ulem}
+  \\usepackage{amsmath}
+  \\usepackage{textcomp}
+  \\usepackage{marvosym}
+  \\usepackage{wasysym}
+  \\usepackage{amssymb}
+  \\usepackage{hyperref}
+  \\usepackage{mathpazo}
+  \\usepackage{color}
+  \\usepackage{enumerate}
+  \\definecolor{bg}{rgb}{0.95,0.95,0.95}
+  \\tolerance=1000
+      [NO-DEFAULT-PACKAGES]
+      [PACKAGES]
+      [EXTRA]
+  \\linespread{1.1}
+  \\hypersetup{pdfborder=0 0 0}"
+                  ("\\section{%s}" . "\\section*{%s}")
+                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                  ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+
+
+  (add-to-list 'org-latex-classes '("ebook"
+                                  "\\documentclass[11pt, oneside]{memoir}
+  \\setstocksize{9in}{6in}
+  \\settrimmedsize{\\stockheight}{\\stockwidth}{*}
+  \\setlrmarginsandblock{2cm}{2cm}{*} % Left and right margin
+  \\setulmarginsandblock{2cm}{2cm}{*} % Upper and lower margin
+  \\checkandfixthelayout
+  % Much more laTeX code omitted
+  "
+                                  ("\\chapter{%s}" . "\\chapter*{%s}")
+                                  ("\\section{%s}" . "\\section*{%s}")
+                                  ("\\subsection{%s}" . "\\subsection*{%s}")))
 #+end_src
 
 * Custom functions
