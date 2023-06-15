@@ -83,6 +83,17 @@ on some major modes rather than globally
 #+end_src
 *** Enable rainbow-delimiters in all programming modes
 #+begin_src emacs-lisp
+  (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
+  (set-face-foreground 'rainbow-delimiters-depth-1-face "white")
+  (set-face-foreground 'rainbow-delimiters-depth-2-face "deep sky blue")
+  (set-face-foreground 'rainbow-delimiters-depth-3-face "magenta")
+  (set-face-foreground 'rainbow-delimiters-depth-4-face "spring green")
+  (set-face-foreground 'rainbow-delimiters-depth-5-face "chocolate")
+  (set-face-foreground 'rainbow-delimiters-depth-6-face "dark gray")
+  (set-face-foreground 'rainbow-delimiters-depth-7-face "yellow")
+  (set-face-foreground 'rainbow-delimiters-depth-8-face "tomato2")
+  (set-face-foreground 'rainbow-delimiters-depth-9-face "LightGoldenrod1")
+
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
 
@@ -594,6 +605,16 @@ Minor mode that emulates vim-commentary by Tim Pope
     :diminish evil-commentary-mode
     :init
     (evil-commentary-mode))
+#+end_src
+
+** Initialize =sly=
+
+Sly REPL
+
+#+begin_src emacs-lisp
+  (use-package sly
+    :ensure t)
+   (setq inferior-lisp-program "/usr/bin/sbcl")
 #+end_src
 
 ** Initialize =sudo-edit=
