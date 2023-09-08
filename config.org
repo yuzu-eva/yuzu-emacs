@@ -10,8 +10,8 @@
 yuzu-emacs is my personal configuration for emacs.
 It is a (currently) very basic configuration, which is heavily inspired by
 [[https://github.com/snackon/Witchmacs][Witchmacs]], the main difference is that this configuration is leaning a bit more
-towards vim-keybindings.
-My goal is to make this into a fully functional IDE for RoR, Python and C.
+towards vim-keybindings and writing documents via org-mode. It also has some
+capabilities as an IDE for C, Python and RoR.
 
 * Terminal
 
