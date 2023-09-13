@@ -112,6 +112,12 @@ on some major modes rather than globally
   (setq scroll-conservatively 100)  
 #+end_src
 
+*** Set font
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :font "Hack Nerd Font" :height 110)
+#+end_src
+
 *** Set initial buffer to dashboard
 #+begin_src emacs-lisp
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
@@ -563,7 +569,7 @@ Better way to switch windows
     (setq switch-window-threshold 2)
     (setq switch-window-shortcut-style 'qwerty)
     (setq switch-window-qwerty-shortcuts
-          '("a" "s" "d" "f" "h" "j" "k" "l"))
+          '("a" "o" "e" "u" "h" "t" "n" "s"))
     :bind
     ([remap other-window] . switch-window))
 #+end_src
@@ -632,7 +638,7 @@ Sly REPL
 #+begin_src emacs-lisp
   (use-package sly
     :ensure t)
-   (setq inferior-lisp-program "/usr/bin/sbcl")
+   (setq inferior-lisp-program "/usr/local/bin/sbcl")
 #+end_src
 
 ** Initialize =sudo-edit=
@@ -737,3 +743,4 @@ Some keybinds to make life easier
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c f") 'recentf-open-files)
 #+end_src
+
