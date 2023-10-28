@@ -345,21 +345,23 @@ My preferred org-mode defaults
 
 * Custom functions
 
-** Set Frame Alpha
+** Toggle Transparency
 
-Function to interactively set transparancy.
+Function to toggle transparency
 
 #+begin_src emacs-lisp
-  (defun set-frame-alpha (arg &optional active)
-    (interactive "nEnter alpha value (1-100): \np")
-    (let* ((elt (assoc 'alpha default-frame-alist))
-           (old (frame-parameter nil 'alpha))
-           (new (cond ((atom old)     `(,arg ,arg))
-                      ((eql 1 active) `(,arg ,(cadr old)))
-                      (t              `(,(car old) ,arg)))))
-      (if elt (setcdr elt new) (push `(alpha ,@new) default-frame-alist))
-      (set-frame-parameter nil 'alpha new)))
-  (global-set-key (kbd "C-c t") 'set-frame-alpha)
+  (defconst frame-transparency 85)
+
+  (defun toggle-transparency ()
+    (interactive)
+    (let ((frame-alpha (frame-parameter nil 'alpha)))
+      (if (or (not frame-alpha)
+              (= (cadr frame-alpha) 100))
+          (set-frame-parameter nil 'alpha
+                               `(,frame-transparency
+                                 ,frame-transparency))
+        (set-frame-parameter nil 'alpha '(100 100)))))
+  (global-set-key (kbd "C-c t") 'toggle-transparency)
 #+end_src
 
 ** Config edit/reload
@@ -642,17 +644,6 @@ Better looking modeline. Using powerline with the spaceline theme
     (spaceline-spacemacs-theme)
     :hook
     ('after-init-hook) . 'powerline-reset)
-#+end_src
-
-** Initialize =popup-kill-ring=
-
-Replaces the default "M-y" kill ring with a popup menu for easy selection
-
-#+begin_src emacs-lisp
-  (use-package popup-kill-ring
-    :ensure t
-    :bind
-    ("M-y" . popup-kill-ring))
 #+end_src
 
 ** Initialize =page-break-lines=
