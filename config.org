@@ -510,20 +510,6 @@ Configure a custom starting buffer
              "Open the init file"
              (lambda (&rest _) (find-file "~/.emacs.d/init.el")))))))
 #+End_src
-** Initialize =auto-package-update=
-
-Auto-package-update automatically updates and removes old packages
-
-#+begin_src emacs-lisp
-  (use-package auto-package-update
-    :defer nil
-    :ensure t
-    :config
-    (setq auto-package-update-delete-old-versions t)
-    (setq auto-package-update-hide-results t)
-    (auto-package-update-maybe))
-#+end_src
-
 ** Initialize =diminish=
 
 Hides minor modes to prevent cluttering modeline
@@ -549,42 +535,6 @@ Completion menu for keybinds
     (which-key-mode))
 #+end_src
 
-** Initialize =ido-vertical-mode=
-
-Uses a vertical mini-buffer for ido, instead of a horizontal one
-
-#+begin_src emacs-lisp
-  (use-package ido-vertical-mode
-    :ensure t
-    :init
-    (ido-vertical-mode 1))
-#+end_src
-
-** Initialize =smex=
-
-Vertical mini-buffer for interactive commands, similar to ido-vertical
-
-#+begin_src emacs-lisp
-  (use-package smex
-    :ensure t
-    :init (smex-initialize)
-    :bind
-    ("M-x" . smex))
-#+end_src
-
-** Initialize =avy=
-
-Pressing "M-s" prompts for a character. Entering a character will highlight all
-of them in the current visible buffer with another letter overlayed. Pressing
-that letter will move the cursor to the highlighted character
-
-#+begin_src emacs-lisp
-  (use-package avy
-    :ensure t
-    :bind
-    ("M-s" . avy-goto-char))
-#+end_src
-
 ** Initialize =rainbow-mode=
 
 Displays colour of a hex code as background colour behind said hex code
@@ -594,24 +544,6 @@ Displays colour of a hex code as background colour behind said hex code
     :ensure t
     :init
     (add-hook 'css-mode-hook 'rainbow-mode))
-#+end_src
-
-** Initialize =switch-window=
-
-Better way to switch windows
-
-#+begin_src emacs-lisp
-  (use-package switch-window
-    :ensure t
-    :config
-    (setq switch-window-input-style 'minibuffer)
-    (setq switch-window-increase 4)
-    (setq switch-window-threshold 2)
-    (setq switch-window-shortcut-style 'qwerty)
-    (setq switch-window-qwerty-shortcuts
-          '("a" "o" "e" "u" "h" "t" "n" "s"))
-    :bind
-    ([remap other-window] . switch-window))
 #+end_src
 
 ** Initialize =sly=
@@ -725,10 +657,10 @@ Autocompletion backend for C and C++
 
 Some keybinds to make life easier
 
-** Make <menu> do M-x (currently set to smex)
+** Make <menu> do M-x
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<menu>") 'smex)
+  (global-set-key (kbd "<menu>") 'execute-extended-command)
 #+end_src
 
 ** Open URL in browser
