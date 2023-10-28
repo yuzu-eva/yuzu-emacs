@@ -193,42 +193,6 @@ ibuffer on "C-x b"
       (display-buffer-pop-up-window buffer alist)))
 #+end_src
 
-*** Moving around brackets
-
-Thanks to [[http://xahlee.info][Xah Lee]] for this code.
-
-#+begin_src emacs-lisp
-  (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
-   "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-  Used by `xah-select-text-in-quote' and others.")
-
-  (defconst xah-left-brackets
-    (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
-    "List of left bracket chars. Each element is a string.")
-
-  (defconst xah-right-brackets
-    (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
-    "List of right bracket chars. Each element is a string.")
-
-  (defun xah-backward-left-bracket ()
-    "Move cursor to the previous occurrence of left bracket.
-  The list of brackets to jump to is defined by `xah-left-brackets'.
-
-  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-  Version: 2015-10-01"
-    (interactive)
-    (re-search-backward (regexp-opt xah-left-brackets) nil t))
-
-  (defun xah-forward-right-bracket ()
-    "Move cursor to the next occurrence of right bracket.
-  The list of brackets to jump to is defined by `xah-right-brackets'.
-
-  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-  Version: 2015-10-01"
-    (interactive)
-    (re-search-forward (regexp-opt xah-right-brackets) nil t))
-#+end_src
-
 * Org mode
 
 My preferred org-mode defaults
@@ -382,26 +346,13 @@ Function to toggle transparency
   (global-set-key (kbd "C-c r") 'config-reload)
 #+end_src
 
-** Creating new window automatically focuses it
+** Kill all buffers
 
-*** horizontal
 #+begin_src emacs-lisp
-  (defun split-and-follow-horizontally ()
+  (defun kill-all-buffers ()
     (interactive)
-    (split-window-below)
-    (balance-windows)
-    (other-window 1))
-  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-#+end_src
-
-*** vertical
-#+begin_src emacs-lisp
-  (defun split-and-follow-vertically ()
-    (interactive)
-    (split-window-right)
-    (balance-windows)
-    (other-window 1))
-  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
 #+end_src
 
 ** Always kill current buffer
@@ -411,15 +362,6 @@ Function to toggle transparency
     (interactive)
     (kill-buffer (current-buffer)))
   (global-set-key (kbd "C-x C-k") 'kill-curr-buffer)
-#+end_src
-
-** Kill all buffers
-
-#+begin_src emacs-lisp
-  (defun kill-all-buffers ()
-    (interactive)
-    (mapc 'kill-buffer (buffer-list)))
-  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
 #+end_src
 
 ** Find-next-file
@@ -438,9 +380,52 @@ Function to toggle transparency
                        (length files))))
         (find-file (nth pos files)))))
 
-  (global-set-key (kbd "C-c C-j") 'find-next-file)
-  (global-set-key (kbd "C-c C-k") (lambda () (interactive) (find-next-file :backward)))
+  (global-set-key (kbd "C-c C-n") 'find-next-file)
+  (global-set-key (kbd "C-c C-p") (lambda () (interactive) (find-next-file :backward)))
 #+end_src
+
+** Moving around brackets
+
+Taken from  [[http://xahlee.info][Xah Lee]].
+
+#+begin_src emacs-lisp
+  (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝"
+                         "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】"
+                         "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫"
+                         "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫"
+                         "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜"
+                         "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆"
+                         "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+   "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
+  Used by `xah-select-text-in-quote' and others.")
+
+  (defconst xah-left-brackets
+    (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
+    "List of left bracket chars. Each element is a string.")
+
+  (defconst xah-right-brackets
+    (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
+    "List of right bracket chars. Each element is a string.")
+
+  (defun xah-backward-left-bracket ()
+    "Move cursor to the previous occurrence of left bracket.
+  The list of brackets to jump to is defined by `xah-left-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-backward (regexp-opt xah-left-brackets) nil t))
+
+  (defun xah-forward-right-bracket ()
+    "Move cursor to the next occurrence of right bracket.
+  The list of brackets to jump to is defined by `xah-right-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-forward (regexp-opt xah-right-brackets) nil t))
+#+end_src
+
 * Use-Package section
 
 ** Initialize =dashboard=
@@ -626,24 +611,6 @@ Allow for editing files as sudo
     :ensure t
     :bind
     ("s-C-e" . sudo-edit))
-#+end_src
-
-** Initialize =powerline=
-
-Better looking modeline. Using powerline with the spaceline theme
-
-#+begin_src emacs-lisp
-  (use-package spaceline
-    :ensure t)
-
-  (use-package powerline
-    :ensure t
-    :config
-    (setq powerline-default-separator 'arrow)
-    :init
-    (spaceline-spacemacs-theme)
-    :hook
-    ('after-init-hook) . 'powerline-reset)
 #+end_src
 
 ** Initialize =page-break-lines=
