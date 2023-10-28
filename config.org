@@ -670,17 +670,25 @@ Allow for editing with multiple cursors at the same time
     ("C-c C-<" . mc/mark-all-like-this))
 #+end_src
 
-** Initialize =drag-stuff=
+** Initialize =move-text=
 
-Move line or region around using M-<UP> M-<DOWN> M-<LEFT> M-<RIGHT>
+Move line or region around using M-p M-n
 
 #+begin_src emacs-lisp
-  (use-package drag-stuff
+  (use-package move-text
     :ensure t
-    :diminish drag-stuff-mode
-    :config
-    (drag-stuff-global-mode 1)
-    (drag-stuff-define-keys))
+    :bind
+    ("M-p" . move-text-up)
+    ("M-n" . move-text-down))
+#+end_src
+
+** Initialize =magit=
+
+Magical Git interface
+
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t)
 #+end_src
 
 * Programming section
