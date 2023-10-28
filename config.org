@@ -426,6 +426,28 @@ Taken from  [[http://xahlee.info][Xah Lee]].
     (re-search-forward (regexp-opt xah-right-brackets) nil t))
 #+end_src
 
+** Insert newline above/below
+
+Inserts a newline above or below, like O and o in vim
+
+#+begin_src emacs-lisp
+  (defun newline-above ()
+    "Inserts a new line above current line and moves cursor to that position"
+    (interactive)
+    (beginning-of-line)
+    (newline-and-indent)
+    (previous-line)
+    (indent-relative))
+  (global-set-key (kbd "M-O") 'newline-above)
+
+  (defun newline-below ()
+    "Inserts a new line below current line and moves cursor to that position"
+    (interactive)
+    (end-of-line)
+    (newline-and-indent))
+  (global-set-key (kbd "M-o") 'newline-below)
+#+end_src
+
 * Use-Package section
 
 ** Initialize =dashboard=
