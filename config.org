@@ -556,6 +556,18 @@ Sly REPL
    (setq inferior-lisp-program "/usr/local/bin/sbcl")
 #+end_src
 
+** Initialize =smex=
+
+Minibuffer for "execute-extenden-commands"
+
+#+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind
+    ("M-x" . smex))
+#+end_src
+
 ** Initialize =sudo-edit=
 
 Allow for editing files as sudo
@@ -660,7 +672,7 @@ Some keybinds to make life easier
 ** Make <menu> do M-x
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<menu>") 'execute-extended-command)
+  (global-set-key (kbd "<menu>") 'smex)
 #+end_src
 
 ** Open URL in browser
@@ -688,3 +700,4 @@ Some keybinds to make life easier
   (global-set-key (kbd "C-9") 'xah-backward-left-bracket)
   (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
 #+end_src
+
