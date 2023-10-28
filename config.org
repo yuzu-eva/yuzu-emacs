@@ -9,10 +9,10 @@
 * Introduction
 
 yuzu-emacs is my personal configuration for emacs.
-It is a very basic configuration, which is heavily inspired by
-[[https://github.com/snackon/Witchmacs][Witchmacs]], the main difference is that this configuration is leaning a bit more
-towards vim-like keybindings and writing documents via org-mode. It also has some
-capabilities as an IDE for C and C++.
+It is a very basic configuration, which is heavily inspired by [[https://github.com/snackon/Witchmacs][Witchmacs]], the
+main difference is that this configuration uses standard emacs keybindings, no
+evil mode at all. Mainly used for programming in C and writing documents in
+org-mode.
 
 * Terminal
 
@@ -161,14 +161,6 @@ on some major modes rather than globally
   (defalias 'yes-or-no-p 'y-or-n-p)  
 #+end_src
 
-*** More comfortable resize bindings
-#+begin_src emacs-lisp
-  (global-set-key (kbd "s-C-<left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "s-C-<right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "s-C-<down>") 'shrink-window)
-  (global-set-key (kbd "s-C-<up>") 'enlarge-window)
-#+end_src
-
 *** Enable ido mode
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching nil)
@@ -200,6 +192,40 @@ ibuffer on "C-x b"
     (let ((split-height-threshold nil)
           (split-width-threshold 0))
       (display-buffer-pop-up-window buffer alist)))
+#+end_src
+
+*** Moving around brackets
+
+#+begin_src emacs-lisp
+  (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+   "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
+  Used by `xah-select-text-in-quote' and others.")
+
+  (defconst xah-left-brackets
+    (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
+    "List of left bracket chars. Each element is a string.")
+
+  (defconst xah-right-brackets
+    (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
+    "List of right bracket chars. Each element is a string.")
+
+  (defun xah-backward-left-bracket ()
+    "Move cursor to the previous occurrence of left bracket.
+  The list of brackets to jump to is defined by `xah-left-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-backward (regexp-opt xah-left-brackets) nil t))
+
+  (defun xah-forward-right-bracket ()
+    "Move cursor to the next occurrence of right bracket.
+  The list of brackets to jump to is defined by `xah-right-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-forward (regexp-opt xah-right-brackets) nil t))
 #+end_src
 
 * Org mode
@@ -495,7 +521,8 @@ Hides minor modes to prevent cluttering modeline
     :ensure t
     :init
     (diminish 'subword-mode)
-    (diminish 'visual-line-mode))
+    (diminish 'visual-line-mode)
+    (diminish 'abbrev-mode))
 #+end_src
 
 ** Initialize =which-key=
@@ -575,62 +602,62 @@ Better way to switch windows
     ([remap other-window] . switch-window))
 #+end_src
 
-** Initialize =evil=
+# ** Initialize =evil=
 
-vim keybindings in emacs text editing. I don't like emacs' default editor
-keybinds. This emacs config uses vim keybinds only for text editing. Everthing
-else still uses emacs bindings
+# vim keybindings in emacs text editing. I don't like emacs' default editor
+# keybinds. This emacs config uses vim keybinds only for text editing. Everthing
+# else still uses emacs bindings
 
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :defer nil
-    :init
-    (setq evil-want-keybinding nil)
-    (setq evil-want-C-u-scroll t)
-    :config
-    (evil-mode 1)
-    (evil-set-undo-system 'undo-redo)
-    (evil-set-initial-state 'dired-mode 'emacs))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package evil
+#     :ensure t
+#     :defer nil
+#     :init
+#     (setq evil-want-keybinding nil)
+#     (setq evil-want-C-u-scroll t)
+#     :config
+#     (evil-mode 1)
+#     (evil-set-undo-system 'undo-redo)
+#     (evil-set-initial-state 'dired-mode 'emacs))
+# #+end_src
 
-** Initialize =evil-org-mode=
+# ** Initialize =evil-org-mode=
 
-Evil extension for org-mode
+# Evil extension for org-mode
 
-#+begin_src emacs-lisp
-  (use-package evil-org
-    :ensure t
-    :after org
-    :config
-    (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys)
-    :init
-    (add-hook 'org-mode-hook 'evil-org-mode))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package evil-org
+#     :ensure t
+#     :after org
+#     :config
+#     (require 'evil-org-agenda)
+#     (evil-org-agenda-set-keys)
+#     :init
+#     (add-hook 'org-mode-hook 'evil-org-mode))
+# #+end_src
 
-** Initialize =evil-surround=
+# ** Initialize =evil-surround=
 
-Minor mode that emulates vim-surround by Tim Pope
+# Minor mode that emulates vim-surround by Tim Pope
 
-#+begin_src emacs-lisp
-  (use-package evil-surround
-    :ensure t
-    :config
-    (global-evil-surround-mode 1))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package evil-surround
+#     :ensure t
+#     :config
+#     (global-evil-surround-mode 1))
+# #+end_src
 
-** Initialize =evil-commentary=
+# ** Initialize =evil-commentary=
 
-Minor mode that emulates vim-commentary by Tim Pope
+# Minor mode that emulates vim-commentary by Tim Pope
 
-#+begin_src emacs-lisp
-  (use-package evil-commentary
-    :ensure t
-    :diminish evil-commentary-mode
-    :init
-    (evil-commentary-mode))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package evil-commentary
+#     :ensure t
+#     :diminish evil-commentary-mode
+#     :init
+#     (evil-commentary-mode))
+# #+end_src
 
 ** Initialize =sly=
 
@@ -683,10 +710,40 @@ Replaces the default "M-y" kill ring with a popup menu for easy selection
 #+end_src
 
 ** Initialize =page-break-lines=
+
+Display ^L page breaks as a horizontal line
+
 #+begin_src emacs-lisp
   (use-package page-break-lines
     :ensure t
     :diminish page-break-lines-mode)
+#+end_src
+
+** Initialize =multiple-cursors=
+
+Allow for editing with multiple cursors at the same time
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind
+    ("C-S-c C-S-c" . mc/edit-lines)
+    ("C->" . mc/mark-next-like-this)
+    ("C-<" . mc/mark-previous-like-this)
+    ("C-c C-<" . mc/mark-all-like-this))
+#+end_src
+
+** Initialize =drag-stuff=
+
+Move line or region around using M-<UP> M-<DOWN> M-<LEFT> M-<RIGHT>
+
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :ensure t
+    :diminish drag-stuff-mode
+    :config
+    (drag-stuff-global-mode 1)
+    (drag-stuff-define-keys))
 #+end_src
 
 * Programming section
@@ -745,14 +802,17 @@ Some keybinds to make life easier
   (global-set-key (kbd "C-c f") 'recentf-open-files)
 #+end_src
 
-** htns movement
+** More comfortable resize bindings
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-C-<left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "s-C-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "s-C-<down>") 'shrink-window)
+  (global-set-key (kbd "s-C-<up>") 'enlarge-window)
+#+end_src
+
+** Xah Lee bracket movement
 
 #+begin_src emacs-lisp
-  (define-key evil-normal-state-map (kbd "s") nil)
-  (define-key evil-motion-state-map (kbd "h") 'evil-backward-char)
-  (define-key evil-motion-state-map (kbd "t") 'evil-next-line)
-  (define-key evil-motion-state-map (kbd "n") 'evil-previous-line)
-  (define-key evil-motion-state-map (kbd "s") 'evil-forward-char)
-  (define-key evil-motion-state-map (kbd "j") 'evil-search-next)
-  (define-key evil-motion-state-map (kbd "k") 'evil-search-previous)
+  (global-set-key (kbd "C-9") 'xah-backward-left-bracket)
+  (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
 #+end_src
