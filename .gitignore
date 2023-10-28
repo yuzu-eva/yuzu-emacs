@@ -8,6 +8,7 @@ tramp
 .last-package-update-day
 
 auto-save-list/
+emacs_saves/
 eln-cache/
 elpa/
 games/

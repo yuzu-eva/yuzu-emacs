@@ -43,10 +43,9 @@ Some quality-of-life improvements
   (scroll-bar-mode -1)  
 #+end_src
 
-*** Disable automatic creation of backup files
+*** Change directory where backups are saved
 #+begin_src emacs-lisp
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)  
+  (setq backup-directory-alist '(("." . "~/.emacs.d/emacs_saves")))
 #+end_src
 
 *** Disable ring-bell
@@ -195,6 +194,8 @@ ibuffer on "C-x b"
 #+end_src
 
 *** Moving around brackets
+
+Thanks to [[http://xahlee.info][Xah Lee]] for this code.
 
 #+begin_src emacs-lisp
   (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝" "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】" "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫" "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫" "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜" "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆" "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
@@ -345,6 +346,11 @@ My preferred org-mode defaults
 * Custom functions
 
 ** Toggle transparency
+
+Something happened between emacs 28 and 29 that this needs to be toggled twice
+for the first time. After that, it toggles as expected. Will try to fix this
+when I find the time to do so.
+
 #+begin_src emacs-lisp
   (defun toggle-transparency()
     (interactive)
