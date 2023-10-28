@@ -345,24 +345,21 @@ My preferred org-mode defaults
 
 * Custom functions
 
-** Toggle transparency
+** Set Frame Alpha
 
-Something happened between emacs 28 and 29 that this needs to be toggled twice
-for the first time. After that, it toggles as expected. Will try to fix this
-when I find the time to do so.
+Function to interactively set transparancy.
 
 #+begin_src emacs-lisp
-  (defun toggle-transparency()
-    (interactive)
-    (let ((alpha (frame-parameter nil 'alpha)))
-      (set-frame-parameter
-       nil 'alpha
-       (if (eql (cond ((numberp alpha) alpha)
-                      ((numberp (cdr alpha)) (cdr alpha)))
-                100)
-           '(90 . 90) '(100 . 100)))))
-
-  (global-set-key (kbd "C-c t") 'toggle-transparency)
+  (defun set-frame-alpha (arg &optional active)
+    (interactive "nEnter alpha value (1-100): \np")
+    (let* ((elt (assoc 'alpha default-frame-alist))
+           (old (frame-parameter nil 'alpha))
+           (new (cond ((atom old)     `(,arg ,arg))
+                      ((eql 1 active) `(,arg ,(cadr old)))
+                      (t              `(,(car old) ,arg)))))
+      (if elt (setcdr elt new) (push `(alpha ,@new) default-frame-alist))
+      (set-frame-parameter nil 'alpha new)))
+  (global-set-key (kbd "C-c t") 'set-frame-alpha)
 #+end_src
 
 ** Config edit/reload
@@ -796,6 +793,12 @@ Autocompletion backend for C and C++
 * Custom keybinds
 
 Some keybinds to make life easier
+
+** Make <menu> do M-x
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<menu>") 'execute-extended-command)
+#+end_src
 
 ** Open URL in browser
 #+begin_src emacs-lisp
