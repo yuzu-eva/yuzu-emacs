@@ -605,63 +605,6 @@ Better way to switch windows
     ([remap other-window] . switch-window))
 #+end_src
 
-# ** Initialize =evil=
-
-# vim keybindings in emacs text editing. I don't like emacs' default editor
-# keybinds. This emacs config uses vim keybinds only for text editing. Everthing
-# else still uses emacs bindings
-
-# #+begin_src emacs-lisp
-#   (use-package evil
-#     :ensure t
-#     :defer nil
-#     :init
-#     (setq evil-want-keybinding nil)
-#     (setq evil-want-C-u-scroll t)
-#     :config
-#     (evil-mode 1)
-#     (evil-set-undo-system 'undo-redo)
-#     (evil-set-initial-state 'dired-mode 'emacs))
-# #+end_src
-
-# ** Initialize =evil-org-mode=
-
-# Evil extension for org-mode
-
-# #+begin_src emacs-lisp
-#   (use-package evil-org
-#     :ensure t
-#     :after org
-#     :config
-#     (require 'evil-org-agenda)
-#     (evil-org-agenda-set-keys)
-#     :init
-#     (add-hook 'org-mode-hook 'evil-org-mode))
-# #+end_src
-
-# ** Initialize =evil-surround=
-
-# Minor mode that emulates vim-surround by Tim Pope
-
-# #+begin_src emacs-lisp
-#   (use-package evil-surround
-#     :ensure t
-#     :config
-#     (global-evil-surround-mode 1))
-# #+end_src
-
-# ** Initialize =evil-commentary=
-
-# Minor mode that emulates vim-commentary by Tim Pope
-
-# #+begin_src emacs-lisp
-#   (use-package evil-commentary
-#     :ensure t
-#     :diminish evil-commentary-mode
-#     :init
-#     (evil-commentary-mode))
-# #+end_src
-
 ** Initialize =sly=
 
 Sly REPL
@@ -794,10 +737,10 @@ Autocompletion backend for C and C++
 
 Some keybinds to make life easier
 
-** Make <menu> do M-x
+** Make <menu> do M-x (currently set to smex)
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<menu>") 'execute-extended-command)
+  (global-set-key (kbd "<menu>") 'smex)
 #+end_src
 
 ** Open URL in browser
