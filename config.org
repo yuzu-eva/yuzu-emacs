@@ -451,7 +451,7 @@ Inserts a newline above or below, like O and o in vim
 
 ** Initialize =dashboard=
 
-Configure a custom starting buffer
+Configure a custom starting buffer. Nothing useful, basically just a picture.
 
 #+begin_src emacs-lisp
   (use-package dashboard
