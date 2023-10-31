@@ -12,7 +12,7 @@ yuzu-emacs is my personal configuration for emacs.
 It is a very basic configuration, which is heavily inspired by [[https://github.com/snackon/Witchmacs][Witchmacs]], the
 main difference is that this configuration uses standard emacs keybindings, no
 evil mode at all. Mainly used for programming in C and writing documents in
-org-mode.
+org-mode. Dashboard is just a picture of Cirno, because why not.
 
 * Terminal
 
@@ -436,8 +436,7 @@ Inserts a newline above or below, like O and o in vim
     (interactive)
     (beginning-of-line)
     (newline-and-indent)
-    (previous-line)
-    (indent-relative))
+    (previous-line))
   (global-set-key (kbd "M-O") 'newline-above)
 
   (defun newline-below ()
@@ -458,22 +457,6 @@ Configure a custom starting buffer
   (use-package dashboard
     :ensure t
     :defer nil
-    :preface
-    (defun update-config ()
-      (interactive)
-      (let ((dir (expand-file-name user-emacs-directory)))
-        (if (file-exists-p dir)
-            (progn
-              (message "yuzu-emacs is updating!")
-              (cd dir)
-              (shell-command "git pull")
-              (message "Update finished. See changes in *Message* buffer and then restart."))
-          (message "\"%s\" doesn't exist"))))
-
-    (defun create-scratch-buffer ()
-      (interactive)
-      (switch-to-buffer (get-buffer-create "*scratch*"))
-      (lisp-interaction-mode))
     :config
     (dashboard-setup-startup-hook)
     (setq dashboard-items '((recents . 5)))
@@ -484,31 +467,7 @@ Configure a custom starting buffer
     (setq dashboard-set-init-info t)
     (setq dashboard-init-info (format "%d packages loaded in %s"
                                       (length package-activated-list) (emacs-init-time)))
-    (setq dashboard-set-footer nil)
-    (setq dashboard-set-navigator t)
-    (setq dashboard-navigator-buttons
-          `(;; line1
-           ((,nil
-             "yuzu-emacs on github"
-             "Open yuzu-emacs' github page on your browser"
-             (lambda (&rest _) (browse-url "https://github.com/yuzu-eva/yuzu-emacs")))
-            (nil
-             "Update yuzu-emacs"
-             "Get the latest yuzu-emacs update. See github commits for changes"
-             (lambda (&rest _) (update-config)))
-            (nil
-             "Open scratch buffer"
-             "Switch to the scratch buffer"
-             (lambda (&rest _) (create-scratch-buffer)))
-            ) ;;line 2
-           ((,nil
-             "Open config.org"
-             "Open configuration file"
-             (lambda (&rest _) (find-file "~/.emacs.d/config.org")))
-            (nil
-             "Open init.el"
-             "Open the init file"
-             (lambda (&rest _) (find-file "~/.emacs.d/init.el")))))))
+    (setq dashboard-set-footer nil))
 #+End_src
 ** Initialize =diminish=
 
@@ -665,6 +624,49 @@ Autocompletion backend for C and C++
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 #+end_src
 
+** Initialize =lsp-mode=
+
+Lsp-mode for autocompletion
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :defer t
+    :commands lsp
+    :hook
+    (lsp-mode . (lambda ()
+                  (let ((lsp-keymap-prefix "C-c l"))
+                    (lsp-enable-which-key-integration))))
+    (sh-mode . lsp)
+    (lua-mode . lsp)
+    :config
+    (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+#+end_src
+
+** Initialize =lua-mode=
+
+#+begin_src emacs-lisp
+  (use-package lua-mode
+    :ensure t
+    :config
+    (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+    (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+    (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
+#+end_src
+
+# ** Configuring =tree-sitter=
+
+# Install tree sitter grammar packages
+
+# #+begin_src emacs-lisp
+#   (setq treesit-language-source-alist
+#         '((c "https://github.com/tree-sitter/tree-sitter-c")
+#           (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
+#   ;;; comment this out after installing packages
+#   ;;; otherwise it'll clone the repos everytime the config is loaded
+#   ;;(mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+# #+end_src
+
 * Custom keybinds
 
 Some keybinds to make life easier
@@ -701,3 +703,9 @@ Some keybinds to make life easier
   (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
 #+end_src
 
+** Comment / uncomment selected region
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c c") 'comment-region)
+  (global-set-key (kbd "C-c u") 'uncomment-region)
+#+end_src

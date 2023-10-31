@@ -6,7 +6,10 @@ ido.last
 smex-items
 tramp
 .last-package-update-day
+.lsp-session*
 
+.cache/
+tree-sitter/
 auto-save-list/
 emacs_saves/
 eln-cache/
