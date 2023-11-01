@@ -703,9 +703,8 @@ Some keybinds to make life easier
   (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
 #+end_src
 
-** Comment / uncomment selected region
+** Comment / uncomment line rebind
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c c") 'comment-region)
-  (global-set-key (kbd "C-c u") 'uncomment-region)
+  (global-set-key (kbd "C-c c") 'comment-line)
 #+end_src
