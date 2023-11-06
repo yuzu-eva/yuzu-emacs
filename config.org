@@ -624,35 +624,35 @@ Autocompletion backend for C and C++
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 #+end_src
 
-** Initialize =lsp-mode=
+# ** Initialize =lsp-mode=
 
-Lsp-mode for autocompletion
+# Lsp-mode for autocompletion
 
-#+begin_src emacs-lisp
-  (use-package lsp-mode
-    :ensure t
-    :defer t
-    :commands lsp
-    :hook
-    (lsp-mode . (lambda ()
-                  (let ((lsp-keymap-prefix "C-c l"))
-                    (lsp-enable-which-key-integration))))
-    (sh-mode . lsp)
-    (lua-mode . lsp)
-    :config
-    (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package lsp-mode
+#     :ensure t
+#     :defer t
+#     :commands lsp
+#     :hook
+#     (lsp-mode . (lambda ()
+#                   (let ((lsp-keymap-prefix "C-c l"))
+#                     (lsp-enable-which-key-integration))))
+#     (sh-mode . lsp)
+#     (lua-mode . lsp)
+#     :config
+#     (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+# #+end_src
 
-** Initialize =lua-mode=
+# ** Initialize =lua-mode=
 
-#+begin_src emacs-lisp
-  (use-package lua-mode
-    :ensure t
-    :config
-    (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-    (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-    (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
-#+end_src
+# #+begin_src emacs-lisp
+#   (use-package lua-mode
+#     :ensure t
+#     :config
+#     (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+#     (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+#     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
+# #+end_src
 
 # ** Configuring =tree-sitter=
 
