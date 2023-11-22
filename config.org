@@ -115,11 +115,6 @@ Also using relative line numbers.
   (set-face-attribute 'default nil :font "Hack Nerd Font" :height 110)
 #+end_src
 
-*** Set initial buffer to dashboard
-#+begin_src emacs-lisp
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-#+end_src
-
 ** Ease of use
 
 *** Set default directory
