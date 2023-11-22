@@ -65,12 +65,14 @@ Some quality-of-life improvements
 
 *** Enable line number
 
-Certain modes will break with line-numbers-mode (e.g. ansi-term) so I'm only enabling it
-on some major modes rather than globally
+Certain modes will break with line-numbers-mode (e.g. ansi-term)
+so I'm only enabling it on some major modes rather than globally.
+Also using relative line numbers.
 
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'text-mode-hook 'display-line-numbers-mode)
+  (setq display-line-numbers 'relative)
 #+end_src
 
 *** Enable column number
@@ -100,11 +102,6 @@ on some major modes rather than globally
 *** Show parent parentheses
 #+begin_src emacs-lisp
   (show-paren-mode 1)
-#+end_src
-
-*** Highlight current line
-#+begin_src emacs-lisp
-  (global-hl-line-mode t)  
 #+end_src
 
 *** Enable conservative scrolling
@@ -343,7 +340,7 @@ Function to toggle transparency
   (defun config-reload ()
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
+  (global-set-key (kbd "C-c l") 'config-reload)
 #+end_src
 
 ** Kill all buffers
@@ -431,44 +428,48 @@ Taken from  [[http://xahlee.info][Xah Lee]].
 Inserts a newline above or below, like O and o in vim
 
 #+begin_src emacs-lisp
-  (defun newline-above ()
+  (defun newline-above-and-move ()
     "Inserts a new line above current line and moves cursor to that position"
     (interactive)
     (beginning-of-line)
     (newline-and-indent)
     (previous-line))
-  (global-set-key (kbd "M-O") 'newline-above)
+  (global-set-key (kbd "M-O") 'newline-above-and-move)
 
-  (defun newline-below ()
+  (defun newline-below-and-move ()
     "Inserts a new line below current line and moves cursor to that position"
     (interactive)
     (end-of-line)
     (newline-and-indent))
-  (global-set-key (kbd "M-o") 'newline-below)
+  (global-set-key (kbd "M-o") 'newline-below-and-move)
+#+end_src
+
+** Duplicate line
+
+Duplicates the current line
+
+#+begin_src emacs-lisp
+  ;; duplicate current line
+  (defun duplicate-current-line (&optional n)
+    "duplicate current line, make more than 1 copy given a numeric argument"
+    (interactive "p")
+    (save-mark-and-excursion
+      (let ((nb (or n 1))
+            (current-line (thing-at-point 'line)))
+        ;; when on last line, insert a newline first
+        (when (or (= 1 (forward-line 1)) (eq (point) (point-max)))
+          (insert "\n"))
+
+        ;; now insert as many time as requested
+        (while (> n 0)
+          (insert current-line)
+          (decf n)))))
+
+  (global-set-key (kbd "C-S-d") 'duplicate-current-line)
 #+end_src
 
 * Use-Package section
 
-** Initialize =dashboard=
-
-Configure a custom starting buffer. Nothing useful, basically just a picture.
-
-#+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :defer nil
-    :config
-    (dashboard-setup-startup-hook)
-    (setq dashboard-items '((recents . 5)))
-    (setq dashboard-banner-logo-title "haaaiiii :3")
-    (setq dashboard-startup-banner "~/.emacs.d/cirno.png")
-    (setq dashboard-center-content t)
-    (setq dashboard-show-shortcuts nil)
-    (setq dashboard-set-init-info t)
-    (setq dashboard-init-info (format "%d packages loaded in %s"
-                                      (length package-activated-list) (emacs-init-time)))
-    (setq dashboard-set-footer nil))
-#+End_src
 ** Initialize =diminish=
 
 Hides minor modes to prevent cluttering modeline
@@ -707,4 +708,10 @@ Some keybinds to make life easier
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c c") 'comment-line)
+#+end_src
+
+** Bind compile command to C-c r
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c r") 'compile)
 #+end_src

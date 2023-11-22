@@ -42,3 +42,5 @@
 
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
