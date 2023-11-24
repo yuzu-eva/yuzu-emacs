@@ -12,7 +12,7 @@ yuzu-emacs is my personal configuration for emacs.
 It is a very basic configuration, which is heavily inspired by [[https://github.com/snackon/Witchmacs][Witchmacs]], the
 main difference is that this configuration uses standard emacs keybindings, no
 evil mode at all. Mainly used for programming in C and writing documents in
-org-mode. Dashboard is just a picture of Cirno, because why not.
+org-mode.
 
 * Terminal
 
@@ -577,6 +577,17 @@ Magical Git interface
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t)
+#+end_src
+
+** Initialize =GLSL-mode=
+
+Mode for OpenGL Shading Language
+
+#+begin_src emacs-lisp
+  (use-package glsl-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.fs$" . glsl-mode)))
 #+end_src
 
 * Programming section
