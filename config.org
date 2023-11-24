@@ -4,8 +4,6 @@
 #+LANGUAGE: en
 #+OPTIONS: num:nil
 
-[[./yuzu-emacs.png]]
-
 * Introduction
 
 yuzu-emacs is my personal configuration for emacs.
