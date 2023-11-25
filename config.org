@@ -7,14 +7,12 @@
 * Introduction
 
 yuzu-emacs is my personal configuration for emacs.
-It is a very basic configuration, which is heavily inspired by [[https://github.com/snackon/Witchmacs][Witchmacs]], the
-main difference is that this configuration uses standard emacs keybindings, no
-evil mode at all. Mainly used for programming in C and writing documents in
-org-mode.
+It is a very basic configuration that sets some visual improvements and defines a couple of quality-of-life functions. Mainly used for programming in C and writing documents in org-mode.
 
 * Terminal
 
 ** Setting default shell to zsh
+
 #+begin_src emacs-lisp
   (defvar my-term-shell "/bin/zsh")
   (defadvice ansi-term (before force-bash)
@@ -30,11 +28,13 @@ Some quality-of-life improvements
 ** Disable annoyances
 
 *** Disable default startup screen
+
 #+begin_src emacs-lisp
   (setq inhibit-startup-message t)
 #+end_src
 
 *** Disable most GUI elements
+
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
   (menu-bar-mode -1)
@@ -42,23 +42,29 @@ Some quality-of-life improvements
 #+end_src
 
 *** Change directory where backups are saved
+
 #+begin_src emacs-lisp
   (setq backup-directory-alist '(("." . "~/.emacs.d/emacs_saves")))
 #+end_src
 
 *** Disable ring-bell
+
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore)  
 #+end_src
 
 *** Disable fringes
+
 #+begin_src emacs-lisp
   (set-fringe-mode 0)
 #+end_src
+
 *** Use bash for TRAMP
+
 #+begin_src emacs-lisp
   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+end_src
+
 ** Visual improvements
 
 *** Enable line number
@@ -74,14 +80,19 @@ Also using relative line numbers.
 #+end_src
 
 *** Enable column number
+
 #+begin_src emacs-lisp
   (column-number-mode 1)
 #+end_src
 *** Enable prettify symbols
+
 #+begin_src emacs-lisp
   (global-prettify-symbols-mode t)  
 #+end_src
 *** Enable rainbow-delimiters in all programming modes
+
+Set a different color for each matching pair of brackets
+
 #+begin_src emacs-lisp
   (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
   (set-face-foreground 'rainbow-delimiters-depth-1-face "white")
@@ -98,11 +109,13 @@ Also using relative line numbers.
 #+end_src
 
 *** Show parent parentheses
+
 #+begin_src emacs-lisp
   (show-paren-mode 1)
 #+end_src
 
 *** Enable conservative scrolling
+
 #+begin_src emacs-lisp
   (setq scroll-conservatively 100)  
 #+end_src
@@ -110,7 +123,7 @@ Also using relative line numbers.
 *** Set font
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Hack Nerd Font" :height 110)
+  (set-face-attribute 'default nil :font "Iosevka" :height 130)
 #+end_src
 
 ** Ease of use
@@ -122,20 +135,25 @@ Also using relative line numbers.
 #+end_src
 
 *** Enable copy-pasting outside of emacs
+
 #+begin_src emacs-lisp
   (setq x-select-enable-clipboard t)
 #+end_src
 
 *** Enable pair-matching
+
 #+begin_src emacs-lisp
   (electric-pair-mode t)  
 #+end_src
 
 *** Enable subword-mode
+
 #+begin_src emacs-lisp
   (global-subword-mode 1)
 #+end_src
+
 *** Indentation
+
 #+begin_src emacs-lisp
   (setq-default tab-width 4)
   (setq-default standard-indent 4)
@@ -146,11 +164,13 @@ Also using relative line numbers.
 #+end_src
 
 *** Change yes/no prompt to just y/n
+
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)  
 #+end_src
 
 *** Enable ido mode
+
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching nil)
   (setq ido-create-new-buffer 'always)
@@ -161,7 +181,7 @@ Also using relative line numbers.
 
 *** Change default buffer-list
 
-I hate the default buffer list. I'm using ido-switch-buffer on "C-x C-b" and
+I don't like the default buffer list. I'm using ido-switch-buffer on "C-x C-b" and
 ibuffer on "C-x b"
 
 #+begin_src emacs-lisp
@@ -321,6 +341,7 @@ Function to toggle transparency
 ** Config edit/reload
 
 *** edit
+
 #+begin_src emacs-lisp
   (defun config-visit ()
     (interactive)
@@ -329,6 +350,7 @@ Function to toggle transparency
 #+end_src
 
 *** reload
+
 #+begin_src emacs-lisp
   (defun config-reload ()
     (interactive)
@@ -683,17 +705,13 @@ Some keybinds to make life easier
 #+end_src
 
 ** Open URL in browser
+
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c o") 'browse-url-at-point)
 #+end_src
 
-** Open recent files menu
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-c f") 'recentf-open-files)
-#+end_src
-
 ** More comfortable resize bindings
+
 #+begin_src emacs-lisp
   (global-set-key (kbd "s-C-<left>") 'shrink-window-horizontally)
   (global-set-key (kbd "s-C-<right>") 'enlarge-window-horizontally)
