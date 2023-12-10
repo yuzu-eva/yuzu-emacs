@@ -47,7 +47,6 @@
  '(match ((t (:foreground "#282a36" :background "#f1fa8c"))))
  '(next-error ((t (:inherit (region)))))
  '(query-replace ((t (:inherit (isearch)))))
- '(default ((t (:family "Hack Nerd Font" :foundry "SRC" :width normal :height 113 :weight normal :slant normal :underline nil :overline nil :extend nil :strike-through nil :box nil :inverse-video nil :foreground "#F8F8F2" :background "#000000" :stipple nil :inherit nil)))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#000000" :foreground "#F8F8F2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :family "Iosevka")))))
 
 (provide-theme 'dracula-custom)
-
