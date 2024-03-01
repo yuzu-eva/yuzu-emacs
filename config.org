@@ -84,6 +84,15 @@ Also using relative line numbers.
 #+begin_src emacs-lisp
   (column-number-mode 1)
 #+end_src
+*** Set line-wrap at 80
+
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook 'auto-fill-mode)
+  (add-hook 'text-mode-hook 'auto-fill-mode)
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (setq-default fill-column 80)
+#+end_src
+
 *** Enable prettify symbols
 
 #+begin_src emacs-lisp
@@ -123,7 +132,7 @@ Set a different color for each matching pair of brackets
 *** Set font
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka" :height 130)
+  (set-face-attribute 'default nil :font "Iosevka Term Custom" :height 130)
 #+end_src
 
 ** Ease of use
@@ -210,10 +219,7 @@ My preferred org-mode defaults
 #+begin_src emacs-lisp
   (use-package org
     :config
-    (add-hook 'org-mode-hook 'org-indent-mode)
-    (add-hook 'org-mode-hook
-	      #'(lambda ()
-		 (visual-line-mode 1))))
+    (add-hook 'org-mode-hook 'org-indent-mode))
 
   (use-package org-indent
     :diminish org-indent-mode)
@@ -228,7 +234,10 @@ My preferred org-mode defaults
 
   (setq org-latex-toc-command "\\tableofcontents \\clearpage")
 
-  (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
+  (setq org-latex-packages-alist '(("margin=1in" "geometry" nil)))
+
+  (setq org-latex-caption-above nil)
+  (setq org-html-table-caption-above nil)
 
   (unless (boundp 'org-latex-classes)
   (setq org-latex-classes nil))
@@ -296,6 +305,7 @@ My preferred org-mode defaults
       [PACKAGES]
       [EXTRA]
   \\linespread{1.1}
+  \\pagenumbering{roman}
   \\hypersetup{pdfborder=0 0 0}"
                   ("\\section{%s}" . "\\section*{%s}")
                   ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -307,8 +317,8 @@ My preferred org-mode defaults
                                   "\\documentclass[11pt, oneside]{memoir}
   \\setstocksize{9in}{6in}
   \\settrimmedsize{\\stockheight}{\\stockwidth}{*}
-  \\setlrmarginsandblock{2cm}{2cm}{*} % Left and right margin
-  \\setulmarginsandblock{2cm}{2cm}{*} % Upper and lower margin
+  \\setlrmarginsandblock{1in}{1in}{*} % Left and right margin
+  \\setulmarginsandblock{1in}{1in}{*} % Upper and lower margin
   \\checkandfixthelayout
   % Much more laTeX code omitted
   "
@@ -495,7 +505,9 @@ Hides minor modes to prevent cluttering modeline
     :init
     (diminish 'subword-mode)
     (diminish 'visual-line-mode)
-    (diminish 'abbrev-mode))
+    (diminish 'abbrev-mode)
+    (diminish 'auto-fill-function)
+    (diminish 'eldoc-mode))
 #+end_src
 
 ** Initialize =which-key=
@@ -646,53 +658,67 @@ Autocompletion backend for C and C++
   (use-package irony
     :ensure t
     :config
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'c++-ts-mode-hook 'irony-mode)
+    (add-hook 'c-ts-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (push 'c-ts-mode irony-supported-major-modes)
+  (push 'c++-ts-mode irony-supported-major-modes)
 #+end_src
 
-# ** Initialize =lsp-mode=
+** Initialize =inf-ruby=
 
-# Lsp-mode for autocompletion
+#+begin_src emacs-lisp
+  (use-package inf-ruby
+    :ensure t)
+#+end_src
 
-# #+begin_src emacs-lisp
-#   (use-package lsp-mode
-#     :ensure t
-#     :defer t
-#     :commands lsp
-#     :hook
-#     (lsp-mode . (lambda ()
-#                   (let ((lsp-keymap-prefix "C-c l"))
-#                     (lsp-enable-which-key-integration))))
-#     (sh-mode . lsp)
-#     (lua-mode . lsp)
-#     :config
-#     (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
-# #+end_src
+** Initialize =robe=
 
-# ** Initialize =lua-mode=
+#+begin_src emacs-lisp
+  (use-package robe
+    :ensure t
+    :diminish robe-mode
+    :config
+    (require 'company)
+    (add-hook 'ruby-ts-mode-hook 'robe-mode)
+    (add-to-list 'company-backends 'company-robe))
+#+end_src
 
-# #+begin_src emacs-lisp
-#   (use-package lua-mode
-#     :ensure t
-#     :config
-#     (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-#     (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-#     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
-# #+end_src
+** Initialize =ruby-electric=
 
-# ** Configuring =tree-sitter=
+#+begin_src emacs-lisp
+  (use-package ruby-electric
+    :ensure t
+    :diminish ruby-electric-mode
+    :config
+    (add-hook 'ruby-ts-mode-hook (lambda () (ruby-electric-mode t))))
+#+end_src
 
-# Install tree sitter grammar packages
+** Configuring =ruby-variables=
 
-# #+begin_src emacs-lisp
-#   (setq treesit-language-source-alist
-#         '((c "https://github.com/tree-sitter/tree-sitter-c")
-#           (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
-#   ;;; comment this out after installing packages
-#   ;;; otherwise it'll clone the repos everytime the config is loaded
-#   ;;(mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
-# #+end_src
+#+begin_src emacs-lisp
+  (setq ruby-indent-level 4)
+#+end_src
+
+** Configuring =tree-sitter=
+
+Install tree sitter grammar packages
+
+#+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '((ruby "https://github.com/tree-sitter/tree-sitter-ruby")
+          (c "https://github.com/tree-sitter/tree-sitter-c")
+          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
+  ;;; comment this out after installing packages
+  ;;; otherwise it'll clone the repos everytime the config is loaded
+  ;;(mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+
+  (setq major-mode-remap-alist
+        '((ruby-mode . ruby-ts-mode)
+          (c-mode . c-ts-mode)
+          (c++-mode . c++-ts-mode)))
+#+end_src
 
 * Custom keybinds
 
@@ -736,4 +762,10 @@ Some keybinds to make life easier
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c r") 'compile)
+#+end_src
+
+** inf-ruby command to C-c s
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c s") 'inf-ruby)
 #+end_src

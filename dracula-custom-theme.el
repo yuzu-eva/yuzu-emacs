@@ -47,6 +47,6 @@
  '(match ((t (:foreground "#282a36" :background "#f1fa8c"))))
  '(next-error ((t (:inherit (region)))))
  '(query-replace ((t (:inherit (isearch)))))
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#000000" :foreground "#F8F8F2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :family "Iosevka")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#000000" :foreground "#F8F8F2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :family "Iosevka Term Custom")))))
 
 (provide-theme 'dracula-custom)
