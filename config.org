@@ -562,6 +562,8 @@ Allow for editing files as sudo
 #+begin_src emacs-lisp
   (use-package sudo-edit
     :ensure t
+    :config
+    (setq sudo-edit-local-method "doas")
     :bind
     ("s-C-e" . sudo-edit))
 #+end_src
@@ -633,7 +635,7 @@ Company is an autocompletion frontend
     :ensure t
     :config
     (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 3)
+    (setq company-minimum-prefix-length 1)
     :init
     (add-hook 'after-init-hook 'global-company-mode))
 
@@ -693,6 +695,16 @@ Autocompletion backend for C and C++
     :diminish ruby-electric-mode
     :config
     (add-hook 'ruby-ts-mode-hook (lambda () (ruby-electric-mode t))))
+#+end_src
+
+** Initialize =rubocop=
+
+#+begin_src emacs-lisp
+  (use-package rubocop
+    :ensure t
+    :init
+    (add-hook 'ruby-ts-mode-hook 'rubocop-mode)
+    :diminish rubocop-mode)
 #+end_src
 
 ** Configuring =ruby-variables=
@@ -758,10 +770,10 @@ Some keybinds to make life easier
   (global-set-key (kbd "C-c c") 'comment-line)
 #+end_src
 
-** Bind compile command to C-c r
+** Bind compile command to C-c m
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c r") 'compile)
+  (global-set-key (kbd "C-c m") 'compile)
 #+end_src
 
 ** inf-ruby command to C-c s
