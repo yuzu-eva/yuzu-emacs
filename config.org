@@ -65,6 +65,12 @@ Some quality-of-life improvements
   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+end_src
 
+*** Kill dired-buffer when changing directory
+
+#+begin_src emacs-lisp
+  (setq dired-kill-when-opening-new-dired-buffer t)
+#+end_src
+
 ** Visual improvements
 
 *** Enable line number
@@ -164,11 +170,14 @@ Set a different color for each matching pair of brackets
 *** Indentation
 
 #+begin_src emacs-lisp
-  (setq-default tab-width 4)
-  (setq-default standard-indent 4)
-  (setq c-basic-offset tab-width)
-  (setq-default electric-indent-inhibit t)
-  (setq-default indent-tabs-mode t)
+  (setq tab-width 4)
+  (setq standard-indent 4)
+  (setq c-default-style "linux")
+  (setq c-ts-mode-indent-style "linux")
+  (setq c-basic-offset 4)
+  (setq c-ts-mode-indent-offset 4)
+  (setq electric-indent-inhibit t)
+  (setq indent-tabs-mode t)
   (setq backward-delete-char-untabify-method 'nil)
 #+end_src
 
@@ -210,6 +219,12 @@ ibuffer on "C-x b"
     (let ((split-height-threshold nil)
           (split-width-threshold 0))
       (display-buffer-pop-up-window buffer alist)))
+#+end_src
+
+*** Use MIT-Scheme
+
+#+begin_src emacs-lisp
+  (setq scheme-program-name "mit-scheme")
 #+end_src
 
 * Org mode
