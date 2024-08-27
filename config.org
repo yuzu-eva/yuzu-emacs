@@ -1,4 +1,4 @@
-#+TITLE: yuzu-emacs
+
 #+AUTHOR: yuzu-eva
 #+STARTUP: overview
 #+LANGUAGE: en
@@ -139,6 +139,12 @@ Set a different color for each matching pair of brackets
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil :font "Iosevka Term Custom" :height 130)
+#+end_src
+
+*** Keep syntax-highlighting to a minimum
+
+#+begin_src emacs-lisp
+  (setq font-lock-maximum-decoration '((t . 1)))
 #+end_src
 
 ** Ease of use
@@ -675,12 +681,12 @@ Autocompletion backend for C and C++
   (use-package irony
     :ensure t
     :config
-    (add-hook 'c++-ts-mode-hook 'irony-mode)
-    (add-hook 'c-ts-mode-hook 'irony-mode)
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
-  (push 'c-ts-mode irony-supported-major-modes)
-  (push 'c++-ts-mode irony-supported-major-modes)
+  (push 'c-mode irony-supported-major-modes)
+  (push 'c++-mode irony-supported-major-modes)
 #+end_src
 
 ** Initialize =inf-ruby=
@@ -698,7 +704,7 @@ Autocompletion backend for C and C++
     :diminish robe-mode
     :config
     (require 'company)
-    (add-hook 'ruby-ts-mode-hook 'robe-mode)
+    (add-hook 'ruby-mode-hook 'robe-mode)
     (add-to-list 'company-backends 'company-robe))
 #+end_src
 
@@ -709,7 +715,7 @@ Autocompletion backend for C and C++
     :ensure t
     :diminish ruby-electric-mode
     :config
-    (add-hook 'ruby-ts-mode-hook (lambda () (ruby-electric-mode t))))
+    (add-hook 'ruby-mode-hook (lambda () (ruby-electric-mode t))))
 #+end_src
 
 ** Initialize =rubocop=
@@ -718,7 +724,7 @@ Autocompletion backend for C and C++
   (use-package rubocop
     :ensure t
     :init
-    (add-hook 'ruby-ts-mode-hook 'rubocop-mode)
+    (add-hook 'ruby-mode-hook 'rubocop-mode)
     :diminish rubocop-mode)
 #+end_src
 
@@ -728,24 +734,25 @@ Autocompletion backend for C and C++
   (setq ruby-indent-level 4)
 #+end_src
 
-** Configuring =tree-sitter=
 
-Install tree sitter grammar packages
+# ** Configuring =tree-sitter=
 
-#+begin_src emacs-lisp
-  (setq treesit-language-source-alist
-        '((ruby "https://github.com/tree-sitter/tree-sitter-ruby")
-          (c "https://github.com/tree-sitter/tree-sitter-c")
-          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
-  ;;; comment this out after installing packages
-  ;;; otherwise it'll clone the repos everytime the config is loaded
-  ;;(mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+# Install tree sitter grammar packages
 
-  (setq major-mode-remap-alist
-        '((ruby-mode . ruby-ts-mode)
-          (c-mode . c-ts-mode)
-          (c++-mode . c++-ts-mode)))
-#+end_src
+# #+begin_src emacs-lisp
+#   (setq treesit-language-source-alist
+#         '((ruby "https://github.com/tree-sitter/tree-sitter-ruby")
+#           (c "https://github.com/tree-sitter/tree-sitter-c")
+#           (cpp "https://github.com/tree-sitter/tree-sitter-cpp")))
+#   ;;; comment this out after installing packages
+#   ;;; otherwise it'll clone the repos everytime the config is loaded
+#   ;;(mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+
+#   (setq major-mode-remap-alist
+#         '((ruby-mode . ruby-ts-mode)
+#           (c-mode . c-ts-mode)
+#           (c++-mode . c++-ts-mode)))
+# #+end_src
 
 * Custom keybinds
 
