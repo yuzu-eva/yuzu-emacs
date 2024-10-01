@@ -168,10 +168,10 @@ Set a different color for each matching pair of brackets
 *** Indentation
 
 #+begin_src emacs-lisp
-  (setq indent-tabs-mode nil)
-  (setq electric-indent-inhibit t)
+  (setq-default indent-tabs-mode nil)
+  (setq-default electric-indent-inhibit t)
   (setq backward-delete-char-untabify-method nil)
-  (setq c-default-style "kr")
+  (setq c-default-style "k&r")
   (setq tab-width 4)
   (setq standard-indent 4)
   (setq c-basic-offset 4)
