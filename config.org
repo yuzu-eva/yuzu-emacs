@@ -90,14 +90,6 @@ Also using relative line numbers.
 #+begin_src emacs-lisp
   (column-number-mode 1)
 #+end_src
-*** Set line-wrap at 80
-
-#+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'auto-fill-mode)
-  (add-hook 'text-mode-hook 'auto-fill-mode)
-  (add-hook 'org-mode-hook 'auto-fill-mode)
-  (setq-default fill-column 80)
-#+end_src
 
 *** Enable prettify symbols
 
@@ -110,15 +102,15 @@ Set a different color for each matching pair of brackets
 
 #+begin_src emacs-lisp
   (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
-  (set-face-foreground 'rainbow-delimiters-depth-1-face "white")
-  (set-face-foreground 'rainbow-delimiters-depth-2-face "deep sky blue")
-  (set-face-foreground 'rainbow-delimiters-depth-3-face "magenta")
-  (set-face-foreground 'rainbow-delimiters-depth-4-face "spring green")
-  (set-face-foreground 'rainbow-delimiters-depth-5-face "chocolate")
-  (set-face-foreground 'rainbow-delimiters-depth-6-face "dark gray")
-  (set-face-foreground 'rainbow-delimiters-depth-7-face "yellow")
-  (set-face-foreground 'rainbow-delimiters-depth-8-face "tomato2")
-  (set-face-foreground 'rainbow-delimiters-depth-9-face "LightGoldenrod1")
+  (set-face-foreground 'rainbow-delimiters-depth-1-face "black")
+  (set-face-foreground 'rainbow-delimiters-depth-2-face "blue")
+  (set-face-foreground 'rainbow-delimiters-depth-3-face "dark magenta")
+  (set-face-foreground 'rainbow-delimiters-depth-4-face "dark orange4")
+  (set-face-foreground 'rainbow-delimiters-depth-5-face "chocolate4")
+  (set-face-foreground 'rainbow-delimiters-depth-6-face "gray42")
+  (set-face-foreground 'rainbow-delimiters-depth-7-face "violetred4")
+  (set-face-foreground 'rainbow-delimiters-depth-8-face "dodgerblue4")
+  (set-face-foreground 'rainbow-delimiters-depth-9-face "dark goldenrod")
 
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
@@ -138,7 +130,7 @@ Set a different color for each matching pair of brackets
 *** Set font
 
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka Term Custom" :height 130)
+  (add-to-list 'default-frame-alist '(font . "Iosevka Term Custom-13"))
 #+end_src
 
 *** Keep syntax-highlighting to a minimum
@@ -176,15 +168,16 @@ Set a different color for each matching pair of brackets
 *** Indentation
 
 #+begin_src emacs-lisp
+  (setq indent-tabs-mode nil)
+  (setq electric-indent-inhibit t)
+  (setq backward-delete-char-untabify-method nil)
+  (setq c-default-style "kr")
   (setq tab-width 4)
   (setq standard-indent 4)
-  (setq c-default-style "linux")
-  (setq c-ts-mode-indent-style "linux")
   (setq c-basic-offset 4)
-  (setq c-ts-mode-indent-offset 4)
-  (setq electric-indent-inhibit t)
-  (setq indent-tabs-mode t)
-  (setq backward-delete-char-untabify-method 'nil)
+  (setq python-indent-offset 4)
+  (setq sgml-basic-offset 4)
+  (setq ruby-indent-level 4)
 #+end_src
 
 *** Change yes/no prompt to just y/n
@@ -199,7 +192,6 @@ Set a different color for each matching pair of brackets
   (setq ido-enable-flex-matching nil)
   (setq ido-create-new-buffer 'always)
   (setq ido-everywhere t)
-  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
   (ido-mode 1)
 #+end_src
 
@@ -490,28 +482,15 @@ Inserts a newline above or below, like O and o in vim
   (global-set-key (kbd "M-o") 'newline-below-and-move)
 #+end_src
 
-** Duplicate line
-
-Duplicates the current line
+** Compilation mode
 
 #+begin_src emacs-lisp
-  ;; duplicate current line
-  (defun duplicate-current-line (&optional n)
-    "duplicate current line, make more than 1 copy given a numeric argument"
-    (interactive "p")
-    (save-mark-and-excursion
-      (let ((nb (or n 1))
-            (current-line (thing-at-point 'line)))
-        ;; when on last line, insert a newline first
-        (when (or (= 1 (forward-line 1)) (eq (point) (point-max)))
-          (insert "\n"))
-
-        ;; now insert as many time as requested
-        (while (> n 0)
-          (insert current-line)
-          (decf n)))))
-
-  (global-set-key (kbd "C-S-d") 'duplicate-current-line)
+  (setq-default compilation-scroll-output t)
+  (defun colorize-compilation-buffer ()
+    (read-only-mode nil)
+    (ansi-color-apply-on-region compilation-filter-start (point))
+    (read-only-mode 1))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 #+end_src
 
 * Use-Package section
@@ -584,7 +563,7 @@ Allow for editing files as sudo
   (use-package sudo-edit
     :ensure t
     :config
-    (setq sudo-edit-local-method "doas")
+    (setq sudo-edit-local-method "sudo")
     :bind
     ("s-C-e" . sudo-edit))
 #+end_src
@@ -631,7 +610,9 @@ Magical Git interface
 
 #+begin_src emacs-lisp
   (use-package magit
-    :ensure t)
+    :ensure t
+    :config
+    (setq magit-auto-revert-mode nil))
 #+end_src
 
 ** Initialize =GLSL-mode=
@@ -646,6 +627,30 @@ Mode for OpenGL Shading Language
 #+end_src
 
 * Programming section
+
+** Initialize =simpc=
+
+simpc is a simple c mode that aims to be faster than the default c-mode.
+
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+
+  (defun astyle-buffer (&optional justify)
+    (interactive)
+    (let ((saved-line-number (line-number-at-pos)))
+      (shell-command-on-region
+       (point-max)
+       (point-min)
+       "astyle --style=kr"
+       nil
+       t)
+      (goto-line saved-line-number)))
+
+  (add-hook 'simpc-mode-hook
+            (lambda ()
+              (interactive)
+              (setq-local fill-paragraph-function 'astyle-buffer)))
+#+end_src
 
 ** Initialize =company=
 
@@ -683,10 +688,12 @@ Autocompletion backend for C and C++
     :config
     (add-hook 'c++-mode-hook 'irony-mode)
     (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'simpc-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
   (push 'c-mode irony-supported-major-modes)
   (push 'c++-mode irony-supported-major-modes)
+  (push 'simpc-mode irony-supported-major-modes)
 #+end_src
 
 ** Initialize =inf-ruby=
@@ -728,10 +735,13 @@ Autocompletion backend for C and C++
     :diminish rubocop-mode)
 #+end_src
 
-** Configuring =ruby-variables=
+** Initialize =pyvenv=
 
 #+begin_src emacs-lisp
-  (setq ruby-indent-level 4)
+  (use-package pyvenv
+    :ensure t
+    :config
+    (pyvenv-mode 1))
 #+end_src
 
 
@@ -753,7 +763,6 @@ Autocompletion backend for C and C++
 #           (c-mode . c-ts-mode)
 #           (c++-mode . c++-ts-mode)))
 # #+end_src
-
 * Custom keybinds
 
 Some keybinds to make life easier
@@ -803,3 +812,19 @@ Some keybinds to make life easier
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c s") 'inf-ruby)
 #+end_src
+
+** duplicate-line to C-.
+
+ #+begin_src emacs-lisp
+   (global-set-key (kbd "C-.") 'duplicate-line)
+   (setq duplicate-line-final-position 1)
+ #+end_src
+
+** copy-from-above-command to C-s-.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-s-.") 'copy-from-above-command)
+#+end_src
+ 
+ 
+

@@ -33,10 +33,12 @@
 
 ;; Initialize rainbow-delimiters
 (require 'rainbow-delimiters)
+(require 'simpc-mode)
 
 (set-default-file-modes #o700)
 
-(load-theme 'dracula-custom t)
+;;(load-theme 'dracula-custom t)
+(load-theme 'modus-operandi t)
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
