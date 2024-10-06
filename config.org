@@ -38,7 +38,7 @@ Some quality-of-life improvements
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
   (menu-bar-mode -1)
-  (scroll-bar-mode -1)  
+  (scroll-bar-mode -1)
 #+end_src
 
 *** Change directory where backups are saved
