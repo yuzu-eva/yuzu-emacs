@@ -7,7 +7,8 @@
 * Introduction
 
 yuzu-emacs is my personal configuration for emacs.
-It is a very basic configuration that sets some visual improvements and defines a couple of quality-of-life functions. Mainly used for programming in C and writing documents in org-mode.
+It disables some visual annoyances and sets some helpful functions and keybinds.
+Currently configured for C/C++, Ruby and Python.
 
 * Terminal
 
