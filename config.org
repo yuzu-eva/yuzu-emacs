@@ -140,6 +140,14 @@ Set a different color for each matching pair of brackets
   (setq font-lock-maximum-decoration '((t . 1)))
 #+end_src
 
+*** Display date-time in status bar
+
+#+begin_src emacs-lisp
+  (setq display-time-day-and-date t
+     display-time-24hr-format t)
+  (display-time)
+#+end_src
+
 ** Ease of use
 
 *** Set default directory
