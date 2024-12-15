@@ -10,18 +10,6 @@ yuzu-emacs is my personal configuration for emacs.
 It disables some visual annoyances and sets some helpful functions and keybinds.
 Currently configured for C/C++, Ruby and Python.
 
-* Terminal
-
-** Setting default shell to zsh
-
-#+begin_src emacs-lisp
-  (defvar my-term-shell "/bin/zsh")
-  (defadvice ansi-term (before force-bash)
-    (interactive (list my-term-shell)))
-  (ad-activate 'ansi-term)
-  (global-set-key (kbd "<s-C-return>") 'ansi-term)
-#+end_src
-
 * QoL section
 
 Some quality-of-life improvements
