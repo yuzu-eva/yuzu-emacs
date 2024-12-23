@@ -1,4 +1,3 @@
-
 #+AUTHOR: yuzu-eva
 #+STARTUP: overview
 #+LANGUAGE: en
@@ -78,6 +77,12 @@ Also using relative line numbers.
 
 #+begin_src emacs-lisp
   (column-number-mode 1)
+#+end_src
+
+*** Enable whitespace-mode
+
+#+begin_src emacs-lisp
+  (whitespace-mode 1)
 #+end_src
 
 *** Enable prettify symbols
@@ -165,8 +170,9 @@ Set a different color for each matching pair of brackets
 *** Indentation
 
 #+begin_src emacs-lisp
+  (with-eval-after-load 'electric
+    (electric-indent-mode -1))
   (setq-default indent-tabs-mode nil)
-  (setq-default electric-indent-inhibit t)
   (setq backward-delete-char-untabify-method nil)
   (setq c-default-style "k&r")
   (setq tab-width 4)
@@ -175,6 +181,7 @@ Set a different color for each matching pair of brackets
   (setq python-indent-offset 4)
   (setq sgml-basic-offset 4)
   (setq ruby-indent-level 4)
+  (add-hook 'prog-mode-hook 'electric-indent-local-mode)
 #+end_src
 
 *** Change yes/no prompt to just y/n
