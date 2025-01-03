@@ -82,7 +82,7 @@ Also using relative line numbers.
 *** Enable whitespace-mode
 
 #+begin_src emacs-lisp
-  (whitespace-mode 1)
+  (global-whitespace-mode 1)
 #+end_src
 
 *** Enable prettify symbols
