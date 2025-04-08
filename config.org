@@ -497,6 +497,17 @@ Inserts a newline above or below, like O and o in vim
   (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 #+end_src
 
+** Create TAGS
+
+#+begin_src emacs-lisp
+  (defun create-tags (dir-name)
+    "Create TAGS file."
+    (interactive "DDirectory")
+    (cd dir-name)
+    (shell-command "ctags -e -R *")
+  )
+#+end_src
+
 * Use-Package section
 
 ** Initialize =diminish=
