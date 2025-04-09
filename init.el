@@ -36,6 +36,7 @@
 (require 'simpc-mode)
 
 (set-default-file-modes #o700)
+(setq-default fill-column 72)
 
 ;;(load-theme 'dracula-custom t)
 (load-theme 'modus-operandi t)
@@ -46,3 +47,4 @@
 (load custom-file 'noerror 'nomessage)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
