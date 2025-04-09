@@ -92,7 +92,8 @@ Also using relative line numbers.
 #+end_src
 *** Enable rainbow-delimiters in all programming modes
 
-Set a different color for each matching pair of brackets
+Set a different color for each matching pair of brackets.
+Uses [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]].
 
 #+begin_src emacs-lisp
   (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
@@ -645,7 +646,8 @@ Mode for OpenGL Shading Language
 
 ** Initialize =simpc=
 
-simpc is a simple c mode that aims to be faster than the default c-mode.
+[[https://github.com/rexim/simpc-mode][simpc]] is a simple c mode that aims to
+be faster than the default c-mode.
 
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
