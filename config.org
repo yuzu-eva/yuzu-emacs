@@ -670,6 +670,37 @@ Mode for OpenGL Shading Language
     (add-to-list 'auto-mode-alist '("\\.fs$" . glsl-mode)))
 #+end_src
 
+<<<<<<< Updated upstream
+=======
+** Initialize =smtpmail-multi=
+
+#+begin_src emacs-lisp
+  (use-package smtpmail-multi
+    :ensure t
+    :bind
+    ("C-c m" . notmuch))
+#+end_src
+
+** Initialize =elfeed=
+
+#+begin_src emacs-lisp
+  (use-package elfeed
+    :ensure t)
+
+  (load "elfeed-urls.el")
+#+end_src
+
+** Initialize =yasnippet=
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    (yas-global-mode 1))
+#+end_src
+
+>>>>>>> Stashed changes
 * Programming section
 
 ** Initialize =simpc=
