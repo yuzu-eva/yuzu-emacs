@@ -59,6 +59,12 @@ Some quality-of-life improvements
   (setq dired-kill-when-opening-new-dired-buffer t)
 #+end_src
 
+*** Disable auto-merge in ido
+
+#+begin_src emacs-lisp
+  (setq ido-auto-merge-work-directories-length -1)
+#+end_src
+
 ** Visual improvements
 
 *** Enable line number
@@ -103,28 +109,28 @@ Uses [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]].
 
 #+begin_src emacs-lisp
   ;; colors for light mode
-  ;(set-face-foreground 'rainbow-delimiters-unmatched-face "red")
-  ;(set-face-foreground 'rainbow-delimiters-depth-1-face "black")
-  ;(set-face-foreground 'rainbow-delimiters-depth-2-face "blue")
-  ;(set-face-foreground 'rainbow-delimiters-depth-3-face "dark magenta")
-  ;(set-face-foreground 'rainbow-delimiters-depth-4-face "dark orange4")
-  ;(set-face-foreground 'rainbow-delimiters-depth-5-face "chocolate4")
-  ;(set-face-foreground 'rainbow-delimiters-depth-6-face "gray42")
-  ;(set-face-foreground 'rainbow-delimiters-depth-7-face "violetred4")
-  ;(set-face-foreground 'rainbow-delimiters-depth-8-face "dodgerblue4")
-  ;(set-face-foreground 'rainbow-delimiters-depth-9-face "dark goldenrod")
+  (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
+  (set-face-foreground 'rainbow-delimiters-depth-1-face "black")
+  (set-face-foreground 'rainbow-delimiters-depth-2-face "blue")
+  (set-face-foreground 'rainbow-delimiters-depth-3-face "dark magenta")
+  (set-face-foreground 'rainbow-delimiters-depth-4-face "dark orange4")
+  (set-face-foreground 'rainbow-delimiters-depth-5-face "chocolate4")
+  (set-face-foreground 'rainbow-delimiters-depth-6-face "gray42")
+  (set-face-foreground 'rainbow-delimiters-depth-7-face "violetred4")
+  (set-face-foreground 'rainbow-delimiters-depth-8-face "dodgerblue4")
+  (set-face-foreground 'rainbow-delimiters-depth-9-face "dark goldenrod")
 
   ;; colors for dark mode
-  (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
-  (set-face-foreground 'rainbow-delimiters-depth-1-face "white")
-  (set-face-foreground 'rainbow-delimiters-depth-2-face "green")
-  (set-face-foreground 'rainbow-delimiters-depth-3-face "magenta")
-  (set-face-foreground 'rainbow-delimiters-depth-4-face "orange")
-  (set-face-foreground 'rainbow-delimiters-depth-5-face "cyan")
-  (set-face-foreground 'rainbow-delimiters-depth-6-face "yellew")
-  (set-face-foreground 'rainbow-delimiters-depth-7-face "chocolate4")
-  (set-face-foreground 'rainbow-delimiters-depth-8-face "gray42")
-  (set-face-foreground 'rainbow-delimiters-depth-9-face "dark goldenrod")
+  ;; (set-face-foreground 'rainbow-delimiters-unmatched-face "red")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-1-face "white")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-2-face "green")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-3-face "magenta")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-4-face "orange")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-5-face "cyan")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-6-face "yellew")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-7-face "chocolate4")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-8-face "gray42")
+  ;; (set-face-foreground 'rainbow-delimiters-depth-9-face "dark goldenrod")
 
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
@@ -249,6 +255,13 @@ ibuffer on "C-x b"
   (setq scheme-program-name "mit-scheme")
 #+end_src
 
+*** Use forward-to-word instead of forward-word
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "M-f") 'forward-to-word)
+  (global-set-key (kbd "M-F") 'forward-word)
+#+end_src
+
 * Org mode
 
 My preferred org-mode defaults
@@ -362,6 +375,18 @@ My preferred org-mode defaults
                                   ("\\chapter{%s}" . "\\chapter*{%s}")
                                   ("\\section{%s}" . "\\section*{%s}")
                                   ("\\subsection{%s}" . "\\subsection*{%s}")))
+#+end_src
+
+* Notmuch config
+
+#+begin_src emacs-lisp
+  (setq notmuch-search-oldest-first nil)
+
+  ;; Drafts folder
+  (setq notmuch-draft-folder "Drafts")  ;; default: drafts
+  (setq notmuch-draft-tags '("+draft" "-inbox" )) ;; when saved, default within inbox
+
+  (setq mail-user-agent 'notmuch-user-agent)
 #+end_src
 
 * Custom functions
@@ -534,7 +559,26 @@ Inserts a newline above or below, like O and o in vim
     "Create TAGS file."
     (interactive "DDirectory")
     (cd dir-name)
-    (shell-command "ctags -e*"))
+    (shell-command "ctags -e *"))
+#+end_src
+
+** download / play video with mpv
+
+#+begin_src emacs-lisp
+  (defun play-with-mpv (start end)
+    "Play link in selected region with mpv"
+    (interactive "r")
+    (save-window-excursion
+      (async-shell-command (concat "mpv " (buffer-substring start end) "\&"))))
+
+  (defun download-video (start end)
+    "Download link in selected region with yt-dlp"
+    (interactive "r")
+    (save-window-excursion
+      (async-shell-command (concat "yt-dlp -o \"~/vids/download/%(title)s.%(ext)s\" " (buffer-substring start end) "\&"))))
+
+  (define-key elfeed-show-mode-map (kbd "C-c o") 'play-with-mpv)
+  (define-key elfeed-show-mode-map (kbd "C-c d") 'download-video)
 #+end_src
 
 * Use-Package section
@@ -551,7 +595,8 @@ Hides minor modes to prevent cluttering modeline
     (diminish 'visual-line-mode)
     (diminish 'abbrev-mode)
     (diminish 'auto-fill-function)
-    (diminish 'eldoc-mode))
+    (diminish 'eldoc-mode)
+    (diminish 'yas-minor-mode))
 #+end_src
 
 ** Initialize =which-key=

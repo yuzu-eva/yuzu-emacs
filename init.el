@@ -38,8 +38,8 @@
 (set-default-file-modes #o700)
 (setq-default fill-column 72)
 
-(load-theme 'dracula-custom t)
-;;(load-theme 'modus-operandi t)
+;; (load-theme 'dracula-custom t)
+(load-theme 'modus-operandi t)
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
