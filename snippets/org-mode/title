@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: title
+# key: ,t
+# --
+
+#+TITLE: ${1:title}
+#+AUTHOR: ${2:author}
+#+STARTUP: overview
+#+LANGUAGE: en
+#+OPTIONS: ^:nil
+#+LATEX_HEADER: \let\oldsection\section
+#+LATEX_HEADER: \renewcommand{\section}{\clearpage\oldsection}
+#+LATEX: \pagenumbering{arabic}
+#+LATEX: \setlength\parindent{0pt}
+
+$0
