@@ -389,198 +389,6 @@ My preferred org-mode defaults
   (setq mail-user-agent 'notmuch-user-agent)
 #+end_src
 
-* Custom functions
-
-** toggle-transparency
-
-Function to toggle transparency
-
-#+begin_src emacs-lisp
-  (defconst frame-transparency 85)
-
-  (defun toggle-transparency ()
-    "Toggle transparency. Requires a compositor, e.g picom."
-    (interactive)
-    (let ((frame-alpha (frame-parameter nil 'alpha)))
-      (if (or (not frame-alpha)
-              (= (cadr frame-alpha) 100))
-          (set-frame-parameter nil 'alpha
-                               `(,frame-transparency
-                                 ,frame-transparency))
-        (set-frame-parameter nil 'alpha '(100 100)))))
-  (global-set-key (kbd "C-c C-SPC t") 'toggle-transparency)
-#+end_src
-
-** config-edit/-reload
-
-*** edit
-
-#+begin_src emacs-lisp
-  (defun config-visit ()
-    "Visit config.org file."
-    (interactive)
-    (find-file "~/.emacs.d/config.org"))
-  (global-set-key (kbd "C-c C-SPC e") 'config-visit)
-#+end_src
-
-*** reload
-
-#+begin_src emacs-lisp
-  (defun config-reload ()
-    "Reload the emacs configuration file."
-    (interactive)
-    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c C-SPC r") 'config-reload)
-#+end_src
-
-** kill all buffers
-
-#+begin_src emacs-lisp
-  (defun kill-all-buffers ()
-    "Kill all currently open buffers."
-    (interactive)
-    (mapc 'kill-buffer (buffer-list)))
-  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
-#+end_src
-
-** find-next-file and find-prev-file
-
-#+begin_src emacs-lisp
-  (defun find-next-file ()
-    "Find the next file (by name) in the current directory."
-    (interactive "P")
-    (when buffer-file-name
-      (let* ((file (expand-file-name buffer-file-name))
-             (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
-                                  (sort (directory-files (file-name-directory file) t nil t) 'string<)))
-             (pos (mod (+ (cl-position file files :test 'equal) 1)
-                       (length files))))
-        (find-file (nth pos files)))))
-
-  (defun find-prev-file ()
-    "Find the prev file (by name) in the current directory."
-    (interactive)
-    (when buffer-file-name
-      (let* ((file (expand-file-name buffer-file-name))
-             (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
-                                  (sort (directory-files (file-name-directory file) t nil t) 'string<)))
-             (pos (mod (+ (cl-position file files :test 'equal) -1)
-                       (length files))))
-        (find-file (nth pos files)))))
-
-
-  (global-set-key (kbd "C-c C-SPC n") 'find-next-file)
-  (global-set-key (kbd "C-c C-SPC p") 'find-prev-file)
-
-
-  #+end_src
-
-** moving around brackets
-
-Taken from  [[http://xahlee.info][Xah Lee]].
-
-#+begin_src emacs-lisp
-  (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝"
-                         "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】"
-                         "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫"
-                         "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫"
-                         "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜"
-                         "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆"
-                         "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
-   "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
-  Used by `xah-select-text-in-quote' and others.")
-
-  (defconst xah-left-brackets
-    (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
-    "List of left bracket chars. Each element is a string.")
-
-  (defconst xah-right-brackets
-    (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
-    "List of right bracket chars. Each element is a string.")
-
-  (defun xah-backward-left-bracket ()
-    "Move cursor to the previous occurrence of left bracket.
-  The list of brackets to jump to is defined by `xah-left-brackets'.
-
-  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-  Version: 2015-10-01"
-    (interactive)
-    (re-search-backward (regexp-opt xah-left-brackets) nil t))
-
-  (defun xah-forward-right-bracket ()
-    "Move cursor to the next occurrence of right bracket.
-  The list of brackets to jump to is defined by `xah-right-brackets'.
-
-  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
-  Version: 2015-10-01"
-    (interactive)
-    (re-search-forward (regexp-opt xah-right-brackets) nil t))
-  (global-set-key (kbd "C-9") 'xah-backward-left-bracket)
-  (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
-#+end_src
-
-** insert newline above/below
-
-Inserts a newline above or below, like O and o in vim
-
-#+begin_src emacs-lisp
-  (defun newline-above-and-move ()
-    "Inserts a new line above current line and moves cursor to that position"
-    (interactive)
-    (beginning-of-line)
-    (newline-and-indent)
-    (previous-line))
-  (global-set-key (kbd "M-O") 'newline-above-and-move)
-
-  (defun newline-below-and-move ()
-    "Inserts a new line below current line and moves cursor to that position"
-    (interactive)
-    (end-of-line)
-    (newline-and-indent))
-  (global-set-key (kbd "M-o") 'newline-below-and-move)
-#+end_src
-
-** compilation mode
-
-#+begin_src emacs-lisp
-  (setq-default compilation-scroll-output t)
-  (defun colorize-compilation-buffer ()
-    "Colorize the compilation buffer"
-    (read-only-mode nil)
-    (ansi-color-apply-on-region compilation-filter-start (point))
-    (read-only-mode 1))
-  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-#+end_src
-
-** create TAGS
-
-#+begin_src emacs-lisp
-  (defun create-tags (dir-name)
-    "Create TAGS file."
-    (interactive "DDirectory")
-    (cd dir-name)
-    (shell-command "ctags -e *"))
-#+end_src
-
-** download / play video with mpv
-
-#+begin_src emacs-lisp
-  (defun play-with-mpv (start end)
-    "Play link in selected region with mpv"
-    (interactive "r")
-    (save-window-excursion
-      (async-shell-command (concat "mpv " (buffer-substring start end) "\&"))))
-
-  (defun download-video (start end)
-    "Download link in selected region with yt-dlp"
-    (interactive "r")
-    (save-window-excursion
-      (async-shell-command (concat "yt-dlp -o \"~/vids/download/%(title)s.%(ext)s\" " (buffer-substring start end) "\&"))))
-
-  (define-key elfeed-show-mode-map (kbd "C-c o") 'play-with-mpv)
-  (define-key elfeed-show-mode-map (kbd "C-c d") 'download-video)
-#+end_src
-
 * Use-Package section
 
 ** Initialize =diminish=
@@ -884,6 +692,211 @@ Autocompletion backend for C and C++
 #           (c-mode . c-ts-mode)
 #           (c++-mode . c++-ts-mode)))
 # #+end_src
+
+* Custom functions
+
+** toggle-transparency
+
+Function to toggle transparency
+
+#+begin_src emacs-lisp
+  (defconst frame-transparency 85)
+
+  (defun toggle-transparency ()
+    "Toggle transparency. Requires a compositor, e.g picom."
+    (interactive)
+    (let ((frame-alpha (frame-parameter nil 'alpha)))
+      (if (or (not frame-alpha)
+              (= (cadr frame-alpha) 100))
+          (set-frame-parameter nil 'alpha
+                               `(,frame-transparency
+                                 ,frame-transparency))
+        (set-frame-parameter nil 'alpha '(100 100)))))
+  (global-set-key (kbd "C-c C-SPC t") 'toggle-transparency)
+#+end_src
+
+** config-edit/-reload
+
+*** edit
+
+#+begin_src emacs-lisp
+  (defun config-visit ()
+    "Visit config.org file."
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c C-SPC e") 'config-visit)
+#+end_src
+
+*** reload
+
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    "Reload the emacs configuration file."
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c C-SPC r") 'config-reload)
+#+end_src
+
+** kill all buffers
+
+#+begin_src emacs-lisp
+  (defun kill-all-buffers ()
+    "Kill all currently open buffers."
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
+#+end_src
+
+** find-next-file and find-prev-file
+
+#+begin_src emacs-lisp
+  (defun find-next-file ()
+    "Find the next file (by name) in the current directory."
+    (interactive "P")
+    (when buffer-file-name
+      (let* ((file (expand-file-name buffer-file-name))
+             (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                  (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+             (pos (mod (+ (cl-position file files :test 'equal) 1)
+                       (length files))))
+        (find-file (nth pos files)))))
+
+  (defun find-prev-file ()
+    "Find the prev file (by name) in the current directory."
+    (interactive)
+    (when buffer-file-name
+      (let* ((file (expand-file-name buffer-file-name))
+             (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                  (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+             (pos (mod (+ (cl-position file files :test 'equal) -1)
+                       (length files))))
+        (find-file (nth pos files)))))
+
+
+  (global-set-key (kbd "C-c C-SPC n") 'find-next-file)
+  (global-set-key (kbd "C-c C-SPC p") 'find-prev-file)
+  #+end_src
+
+** moving around brackets
+
+Taken from  [[http://xahlee.info][Xah Lee]].
+
+#+begin_src emacs-lisp
+  (defvar xah-brackets '("“”" "()" "[]" "{}" "<>" "＜＞" "（）" "［］" "｛｝"
+                         "⦅⦆" "〚〛" "⦃⦄" "‹›" "«»" "「」" "〈〉" "《》" "【】"
+                         "〔〕" "⦗⦘" "『』" "〖〗" "〘〙" "｢｣" "⟦⟧" "⟨⟩" "⟪⟫"
+                         "⟮⟯" "⟬⟭" "⌈⌉" "⌊⌋" "⦇⦈" "⦉⦊" "❛❜" "❝❞" "❨❩" "❪❫"
+                         "❴❵" "❬❭" "❮❯" "❰❱" "❲❳" "〈〉" "⦑⦒" "⧼⧽" "﹙﹚" "﹛﹜"
+                         "﹝﹞" "⁽⁾" "₍₎" "⦋⦌" "⦍⦎" "⦏⦐" "⁅⁆" "⸢⸣" "⸤⸥" "⟅⟆"
+                         "⦓⦔" "⦕⦖" "⸦⸧" "⸨⸩" "｟｠")
+   "A list of strings, each element is a string of 2 chars, the left bracket and a matching right bracket.
+  Used by `xah-select-text-in-quote' and others.")
+
+  (defconst xah-left-brackets
+    (mapcar (lambda (x) (substring x 0 1)) xah-brackets)
+    "List of left bracket chars. Each element is a string.")
+
+  (defconst xah-right-brackets
+    (mapcar (lambda (x) (substring x 1 2)) xah-brackets)
+    "List of right bracket chars. Each element is a string.")
+
+  (defun xah-backward-left-bracket ()
+    "Move cursor to the previous occurrence of left bracket.
+  The list of brackets to jump to is defined by `xah-left-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-backward (regexp-opt xah-left-brackets) nil t))
+
+  (defun xah-forward-right-bracket ()
+    "Move cursor to the next occurrence of right bracket.
+  The list of brackets to jump to is defined by `xah-right-brackets'.
+
+  URL `http://xahlee.info/emacs/emacs/emacs_navigating_keys_for_brackets.html'
+  Version: 2015-10-01"
+    (interactive)
+    (re-search-forward (regexp-opt xah-right-brackets) nil t))
+  (global-set-key (kbd "C-9") 'xah-backward-left-bracket)
+  (global-set-key (kbd "C-0") 'xah-forward-right-bracket)
+#+end_src
+
+** insert newline above/below
+
+Inserts a newline above or below, like O and o in vim
+
+#+begin_src emacs-lisp
+  (defun newline-above-and-move ()
+    "Inserts a new line above current line and moves cursor to that position"
+    (interactive)
+    (beginning-of-line)
+    (newline-and-indent)
+    (previous-line))
+  (global-set-key (kbd "M-O") 'newline-above-and-move)
+
+  (defun newline-below-and-move ()
+    "Inserts a new line below current line and moves cursor to that position"
+    (interactive)
+    (end-of-line)
+    (newline-and-indent))
+  (global-set-key (kbd "M-o") 'newline-below-and-move)
+#+end_src
+
+** compilation mode
+
+#+begin_src emacs-lisp
+  (setq-default compilation-scroll-output t)
+  (defun colorize-compilation-buffer ()
+    "Colorize the compilation buffer"
+    (read-only-mode nil)
+    (ansi-color-apply-on-region compilation-filter-start (point))
+    (read-only-mode 1))
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+#+end_src
+
+** create TAGS
+
+#+begin_src emacs-lisp
+  (defun create-tags (dir-name)
+    "Create TAGS file."
+    (interactive "DDirectory")
+    (cd dir-name)
+    (shell-command "ctags -e *"))
+#+end_src
+
+** download / play video with mpv
+
+#+begin_src emacs-lisp
+  (defun play-with-mpv (start end)
+    "Play link in selected region with mpv"
+    (interactive "r")
+    (save-window-excursion
+      (async-shell-command (concat "mpv " (buffer-substring start end) "\&"))))
+
+  (defun download-video (start end)
+    "Download link in selected region with yt-dlp"
+    (interactive "r")
+    (save-window-excursion
+      (async-shell-command (concat "yt-dlp -o \"~/vids/download/%(title)s.%(ext)s\" " (buffer-substring start end) "\&"))))
+
+  (define-key elfeed-show-mode-map (kbd "C-c o") 'play-with-mpv)
+  (define-key elfeed-show-mode-map (kbd "C-c d") 'download-video)
+#+end_src
+
+** temperature converter
+
+#+begin_src emacs-lisp
+  (defun c-to-f (temp)
+    "Convert temperature from Celsius to Fahrenheit"
+    (interactive "nTemperature in Celsius: ")
+    (message "%0.2f" (+ 32 (* temp 1.8))))
+
+  (defun f-to-c (temp)
+    "Convert temperature from Fahrenheit to Celsius"
+    (interactive "nTemperature in Fahrenheit: ")
+    (message "%0.2f" (/ (- temp 32) 1.8)))
+#+end_src
+
 * Custom keybinds and re-binds
 
 Some keybinds to make life easier
