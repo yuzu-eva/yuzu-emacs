@@ -959,6 +959,25 @@ Inserts a newline above or below, like O and o in vim
                       0
                     (sqrt (/ (float sum-squared-diffs) n)))))
       (message "%.2f" stddev)))
+
+  (defun ccoef (xvector yvector)
+    "Calculate the correlation coefficient between x and y"
+    (interactive "xEnter independant vector: \nxEnter dependant vector: ")
+    (let* ((xset xvector)
+           (yset yvector)
+           (n (length xset))
+           (prodxy (cl-mapcar (lambda (x y) (* x y)) xset yset))
+           (sumx (sum xset))
+           (sumy (sum yset))
+           (sumprodxy (sum prodxy))
+           (sumsqx (sum (mapcar (lambda (x) (expt x 2)) xset)))
+           (sumsqy (sum (mapcar (lambda (y) (expt y 2)) yset)))
+           (denominator (float (sqrt (* (- (* n sumsqx) (expt sumx 2))
+                                        (- (* n sumsqy) (expt sumy 2)))))))
+      (if (zerop denominator)
+          (message "Correlation coefficient: NaN (denominator is zero)")
+        (let ((r (/ (- (* n sumprodxy) (* sumx sumy)) denominator)))
+          (message "Correlation coefficient: %.2f" r)))))
 #+end_src
 
 * Custom keybinds and re-binds
