@@ -897,6 +897,70 @@ Inserts a newline above or below, like O and o in vim
     (message "%0.2f" (/ (- temp 32) 1.8)))
 #+end_src
 
+** statistics
+
+#+begin_src emacs-lisp
+  (defun sum (lst)
+    "Calculate the sum of a vector."
+    (interactive "xEnter a vector: ")
+    (unless (listp lst)
+      (error "Input must be a vector!"))
+    (let ((result (if (null lst)
+                      (progn
+                        (message "Empty vector")
+                        0)
+                    (if (null (cdr lst))
+                        (car lst)
+                      (+ (car lst) (sum (cdr lst)))))))
+      (when (called-interactively-p 'any)
+        (message "Sum: %.2f" (float result)))
+      result))
+
+  (defun mean (lst)
+    "Calculate the mean of a vector."
+    (interactive "xEnter a vector: ")
+    (unless (listp lst)
+      (error "Input must be a vector!"))
+    (if (null lst)
+        (message "Mean: 0")
+      (let ((mean-value (/ (float (sum lst)) (length lst))))
+        (message "Mean: %.2f" mean-value)
+        mean-value)))
+
+  (defun sdm (x mean)
+    "Calculate squared difference (datapoint - mean)"
+    (let ((diff (- x mean)))
+      (expt diff 2)))
+
+  (defun pdev (lst)
+    "Calculate Population Standard Deviation of a vector"
+    (interactive "xEnter a vector: ")
+    (unless (listp lst)
+      (error "Input must be a vector!"))
+    (let* ((n (length lst))
+          (mean-value (mean lst))
+          (squared-diffs (mapcar (lambda (x) (sdm x mean-value)) lst))
+          (sum-squared-diffs (sum squared-diffs))
+          (stddev (if (< n 2)
+                      0
+                    (sqrt (/ (float sum-squared-diffs) (1- n))))))
+      (message "%.2f" stddev)))
+
+  (defun sdev (lst)
+    "Calculate Sample Standard Deviation of a vector"
+    (interactive "xEnter a vector: ")
+    (unless (listp lst)
+      (error "Input must be a vector!"))
+    (let* ((n (length lst))
+          (mean-value (mean lst))
+          (squared-diffs (mapcar (lambda (x) (sdm x mean-value)) lst))
+          (sum-squared-diffs (sum squared-diffs))
+          (stddev (if (< n 2)
+                      0
+                    (sqrt (/ (float sum-squared-diffs) n)))))
+      (message "%.2f" stddev)))
+#+end_src
+
 * Custom keybinds and re-binds
 
 Some keybinds to make life easier

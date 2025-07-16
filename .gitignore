@@ -21,6 +21,7 @@ image-dired/
 irony/
 lisp/
 transient/
+url/
 
 !lisp/rainbow-delimiters.el
 !lisp/rainbow-delimiters.elc
